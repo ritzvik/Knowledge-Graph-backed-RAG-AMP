@@ -8,7 +8,7 @@ import streamlit as st
 import utils.constants as const
 from utils.cai_model import getCAIHostedOpenAIModels
 from utils.arxiv_utils import linkify_text
-from utils.neo4j_utils import get_neo4j_credentails, is_neo4j_server_up, reset_neo4j_server, wait_for_neo4j_server
+from utils.neo4j_utils import get_neo4j_credentails, is_neo4j_server_up, wait_for_neo4j_server
 from utils.hybrid_rag import HybridRAG
 from utils.vanilla_rag import VanillaRAG
 import pgs.commons as st_commons
@@ -23,7 +23,6 @@ if st_commons.StateVariables.IS_REMOTE_LLM.value not in st.session_state:
 
 with st.spinner("Spinning up the Neo4j server..."):
     if not is_neo4j_server_up():
-        reset_neo4j_server()
         wait_for_neo4j_server()
 
     graph = Neo4jGraph(
