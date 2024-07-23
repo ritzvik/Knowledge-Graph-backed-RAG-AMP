@@ -37,3 +37,11 @@ class StateVariables(Enum):
     REMOTE_MODEL_ID = "remote_model_id"
     REMOTE_MODEL_API_KEY = "remote_model_api_key"
     IS_REMOTE_LLM = "is_remote_llm"
+
+example_questions = [
+    "What is the difference between GPT-3 and GPT-4?",
+    "How does LLMs help in achieving artificial general intelligence?",
+    "What are agentic workflows in AI?",
+    "Where does vector embeddings fit in the RAG pipeline?",
+    "How does knowledge graph help in improving the quality of a RAG pipeline?",
+]

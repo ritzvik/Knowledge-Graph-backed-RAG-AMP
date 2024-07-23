@@ -86,7 +86,13 @@ def generate_responses(input_text):
         status.update(label="Answer Generation Complete", state="complete", expanded=False)    
 
 with st.form('my_form'):
-    text = st.text_area('Enter question:', 'How does knowledge graph help with RAG pipelines?')
+    question_from_dropdown = st.selectbox(
+        'Choose from our pre-curated example questions.',
+        st_commons.example_questions,
+        index=None,
+        placeholder="Select an example question...",
+    )
+    text = st.text_area('Enter question:', value="", disabled=(question_from_dropdown is not None))
     submitted = st.form_submit_button('Submit')
     if submitted:
-        generate_responses(text)
+        generate_responses(question_from_dropdown if question_from_dropdown is not None else text)
