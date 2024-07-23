@@ -1,4 +1,5 @@
 import logging
+from typing import Iterator
 from langchain.graphs import Neo4jGraph
 from langchain.vectorstores.neo4j_vector import Neo4jVector
 from langchain_core.language_models.llms import BaseLLM
@@ -50,3 +51,14 @@ Try to combine information from multiple documents to answer the question.
             "context": context,
         })
         return response1
+    
+    def stream(self, question: str) -> Iterator[str]:
+        context = self.retrieve_context(question)
+        logging.debug(f"Context: {context}")
+        prompt1 = PromptTemplate.from_template(self.bos_token+self._prompt_template)
+        chain1 = prompt1 | self.llm
+        streaming_response = chain1.stream({
+            "question": question,
+            "context": context,
+        })
+        return streaming_response

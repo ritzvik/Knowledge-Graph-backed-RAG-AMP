@@ -66,10 +66,10 @@ def generate_responses(input_text):
 
         st.write("Generating response from Vanilla RAG...")
         v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
-        answer_vanilla = v.invoke(input_text)
+        streaming_answer_vanilla = v.stream(input_text)
         logging.info("generated response from Vanilla RAG")
         col1.markdown("## Vanilla RAG")
-        col1.markdown(linkify_text(answer_vanilla))
+        col1.write_stream(streaming_answer_vanilla)
 
         st.write("Generating response from Hybrid RAG...")
         h=HybridRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
