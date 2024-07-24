@@ -32,6 +32,7 @@ seed_arxiv_paper_ids = [
     "2407.07061",
     "2407.02485",
     "2407.04153",
+    "2405.18414",
 ]
 
 EMBED_PATH = "./embed_models"
