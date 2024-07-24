@@ -28,8 +28,8 @@ Let's quickly go through some terminologies we would use throughout the AMP.
 
 ### Knowledge Graph
 
-![Sample Image](./assets/sample_image.jpg)
-<img src="./assets/sample_image.jpg" alt="drawing" width="500"/>
+![Sample Image](assets/sample_image.jpg)
+<img src="assets/sample_image.jpg" alt="drawing" width="500"/>
 
 ### Semantic Search
 
