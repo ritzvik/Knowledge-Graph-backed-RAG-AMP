@@ -46,12 +46,12 @@ llm_choice = st.radio(
 is_remote_llm = llm_choice == "Remote LLM"
 
 if is_remote_llm:
-    st.markdown(f":gray[{st_commons.remote_llm_text}]")
+    st.markdown(f":lightgray[{st_commons.remote_llm_text}]")
     remote_model_endpoint = st.text_input('Model Endpoint:')
     remote_model_id = st.text_input('Model ID:')
     remote_model_api_key = st.text_input('API Key:', type='password')
 else:
-    st.markdown(f":gray[{st_commons.local_llm_text}]")
+    st.markdown(f":lightgray[{st_commons.local_llm_text}]")
 
 llm_chosen = st.button('Apply preferences and continue to application', on_click=choose_llm_action)
 if llm_chosen:
