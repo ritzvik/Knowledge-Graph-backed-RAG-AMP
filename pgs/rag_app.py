@@ -4,6 +4,7 @@ from langchain.graphs import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
 from langchain_core.language_models.llms import BaseLLM
 import streamlit as st
+import streamlit.components.v1 as components
 
 import utils.constants as const
 from utils.cai_model import getCAIHostedOpenAIModels
@@ -12,6 +13,7 @@ from utils.neo4j_utils import get_neo4j_credentails, is_neo4j_server_up, wait_fo
 from utils.hybrid_rag import HybridRAG
 from utils.vanilla_rag import VanillaRAG
 import pgs.commons as st_commons
+import pgs.graph_visualisation as st_graph_viz
 
 embedding = st_commons.get_cached_embedding_model()
 
@@ -73,6 +75,7 @@ def generate_responses(input_text):
         st.write("Generating response from Hybrid RAG...")
         h=HybridRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_hybrid = h.invoke(input_text)
+        papers_used_in_hybrid = h.used_papers
         logging.info("generated response from Hybrid RAG")
         col2.markdown("## Hybrid RAG")
         col2.markdown(linkify_text(answer_hybrid))
@@ -82,6 +85,12 @@ def generate_responses(input_text):
         logging.info("generated follow-up answer")
         col3.markdown("## Follow-up details from Hybrid RAG")
         col3.markdown(linkify_text(answer_followup))
+
+        if st.button("Load Graph"):
+            st_graph_viz.visualize_graph(papers_used_in_hybrid, graph)
+            htmlfile = open(const.TEMP_VISUAL_GRAPH_PATH, 'r', encoding='utf-8')
+            htmlfile_source_code = htmlfile.read()
+            components.html(htmlfile_source_code, height=800, scrolling=True)
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)    
 

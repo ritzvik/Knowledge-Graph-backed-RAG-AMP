@@ -27,10 +27,16 @@ seed_arxiv_paper_ids = [
     "2404.18424",
     "2404.02489",
     "2404.19737",
+    # https://github.com/dair-ai/ML-Papers-of-the-Week/tree/main?tab=readme-ov-file#top-ml-papers-of-the-week-july-8---july-14---2024
+    "2407.02678",
+    "2407.07061",
+    "2407.02485",
+    "2407.04153",
 ]
 
 EMBED_PATH = "./embed_models"
 MODELS_PATH = "./models"
+TEMP_VISUAL_GRAPH_PATH = "./temp-graph.html"
 
 huggingface_token = os.getenv("HF_TOKEN")
 
@@ -42,6 +48,3 @@ n_ctx = 2048
 
 llama3_stop_token = "<|eot_id|>"
 llama3_bos_token = "<|begin_of_text|>" # Beggining of sequence token
-
-cai_model_url = "https://ml-2fed18e9-f4c.eng-ml-l.vnu8-sqze.cloudera.site/namespaces/serving-default/endpoints/nousresearch-llama3/v1"
-cai_model_id = "htwa-7bsc-cn3k-v87h"

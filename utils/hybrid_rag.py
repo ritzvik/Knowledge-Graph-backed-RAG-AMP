@@ -73,6 +73,10 @@ Instruction: Please provide the asked information about the papers in the contex
             context += "\n\n"
         return context
     
+    @property
+    def used_papers(self) -> List[str]:
+        return self._used_papers
+    
     def invoke(self, question: str) -> str:
         context = self.retrieve_context(question)
         logging.debug(f"Context: {context}")

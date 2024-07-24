@@ -40,8 +40,9 @@ class StateVariables(Enum):
 
 example_questions = [
     "What is the difference between GPT-3 and GPT-4?",
-    "How does LLMs help in achieving artificial general intelligence?",
+    "How do LLMs help in achieving artificial general intelligence?",
     "What are agentic workflows in AI?",
-    "Where does vector embeddings fit in the RAG pipeline?",
+    "Where do vector embeddings fit in a RAG pipeline?",
     "How does knowledge graph help in improving the quality of a RAG pipeline?",
+    "What are some uses of decoder-only transformers?",
 ]

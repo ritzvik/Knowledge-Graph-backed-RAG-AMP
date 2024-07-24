@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 
-from utils.neo4j_utils import get_neo4j_credentails, is_neo4j_server_up, reset_neo4j_server
+from utils.neo4j_utils import is_neo4j_server_up, reset_neo4j_server
 
 # Trigger Neo4j server in background.
 if not is_neo4j_server_up():
