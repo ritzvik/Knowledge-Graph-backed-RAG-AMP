@@ -1,7 +1,8 @@
-from typing import List, Dict, Any
+from typing import List
 from langchain.graphs import Neo4jGraph
 import networkx as nx
 from pyvis.network import Network
+import streamlit as st
 
 import utils.constants as const
 
@@ -45,7 +46,11 @@ def _create_networkx_graph(paper_ids: List[str], graphDbInstance: Neo4jGraph):
     return G
 
 def visualize_graph(paper_ids: List[str], graphDbInstance: Neo4jGraph):
+    progress_bar = st.progress(20, "Running cypher query for auxiliary context.")
     G = _create_networkx_graph(paper_ids, graphDbInstance)
+    progress_bar.progress(60, "Rendering graph.")
     net = Network(notebook=True)
     net.from_nx(G)
+    progress_bar.progress(90, "Saving graph.")
     net.show(const.TEMP_VISUAL_GRAPH_PATH)
+    progress_bar.empty()
