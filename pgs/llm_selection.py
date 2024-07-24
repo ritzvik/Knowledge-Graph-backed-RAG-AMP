@@ -46,12 +46,12 @@ llm_choice = st.radio(
 is_remote_llm = llm_choice == "Remote LLM"
 
 if is_remote_llm:
-    st.text("Please use an OpenAI API compatible remotely hosted Llama-3-8B-Instruct model.")
+    st.text(f":gray[{st_commons.remote_llm_text}]")
     remote_model_endpoint = st.text_input('Model Endpoint:')
     remote_model_id = st.text_input('Model ID:')
     remote_model_api_key = st.text_input('API Key:', type='password')
 else:
-    st.text("4-bit quantized Llama-3-8B-Instruct model will be used which will utilise in-session GPU. The model has already been quantized as part of the AMP steps.")
+    st.text(f":gray[{st_commons.local_llm_text}]")
 
 llm_chosen = st.button('Apply preferences and continue to application', on_click=choose_llm_action)
 if llm_chosen:

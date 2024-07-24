@@ -46,3 +46,6 @@ example_questions = [
     "How does knowledge graph help in improving the quality of a RAG pipeline?",
     "What are some uses of decoder-only transformers?",
 ]
+
+local_llm_text = "4-bit quantized Llama-3-8B-Instruct model will be used which will utilise in-session GPU. The model has already been quantized as part of the AMP steps."
+remote_llm_text = "Please use an OpenAI API compatible remotely hosted Llama-3-8B-Instruct model."
