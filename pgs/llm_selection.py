@@ -39,13 +39,20 @@ def choose_llm_action():
         st.session_state[st_commons.StateVariables.REMOTE_MODEL_API_KEY.value] = remote_model_api_key
         st.session_state[st_commons.StateVariables.IS_REMOTE_LLM.value] = True
 
-is_remote_llm = st.toggle('Use Remote LLM', value=False)
+llm_choice = st.radio(
+    "Choose LLM type:",
+    options=["Local LLM", "Remote LLM"],
+)
+is_remote_llm = llm_choice == "Remote LLM"
 
 if is_remote_llm:
+    st.text("Please use an OpenAI API compatible remotely hosted Llama-3-8B-Instruct model.")
     remote_model_endpoint = st.text_input('Model Endpoint:')
     remote_model_id = st.text_input('Model ID:')
     remote_model_api_key = st.text_input('API Key:', type='password')
+else:
+    st.text("4-bit quantized Llama-3-8B-Instruct model will be used which will utilise in-session GPU. The model has already been quantized as part of the AMP steps.")
 
-llm_chosen = st.button('Choose LLM and continue to application', on_click=choose_llm_action)
+llm_chosen = st.button('Apply preferences and continue to application', on_click=choose_llm_action)
 if llm_chosen:
     st.switch_page(cwd+"/pgs/rag_app.py")
