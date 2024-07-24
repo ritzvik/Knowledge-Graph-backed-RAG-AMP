@@ -86,7 +86,7 @@ def generate_responses(input_text):
         col3.markdown("## Follow-up details from Hybrid RAG")
         col3.markdown(linkify_text(answer_followup))
 
-        if st.button("Load Graph"):
+        if st.checkbox("Load Graph"):
             st_graph_viz.visualize_graph(papers_used_in_hybrid, graph)
             htmlfile = open(const.TEMP_VISUAL_GRAPH_PATH, 'r', encoding='utf-8')
             htmlfile_source_code = htmlfile.read()
