@@ -1,7 +1,6 @@
-from huggingface_hub import hf_hub_download
 import torch
 import transformers
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from langchain.llms import HuggingFacePipeline
 from langchain_core.language_models.llms import BaseLLM
 
@@ -40,9 +39,8 @@ def load_local_model() -> BaseLLM:
         repetition_penalty=1.1,
         return_full_text=False,
         max_new_tokens=2048,
-        temperature = 0.3,
+        temperature = 0.2,
         do_sample=True,
     )
     local_llm = HuggingFacePipeline(pipeline=text_generation_pipeline)
     return local_llm
-

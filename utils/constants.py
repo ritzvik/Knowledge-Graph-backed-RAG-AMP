@@ -43,9 +43,7 @@ huggingface_token = os.getenv("HF_TOKEN")
 
 embed_model_name="thenlper/gte-large"
 colbert_model = "colbert-ir/colbertv2.0"
-local_model_to_be_quantised = "meta-llama/Meta-Llama-3-8B-Instruct"
-n_gpu_layers = 1
-n_ctx = 2048
+local_model_to_be_quantised = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 
 llama3_stop_token = "<|eot_id|>"
 llama3_bos_token = "<|begin_of_text|>" # Beggining of sequence token
