@@ -88,15 +88,7 @@ def generate_responses(input_text):
         answer_followup = h.invoke_followup()
         logging.info("generated follow-up answer")
         hybrid_folllow_up.markdown("### Follow-up details")
-        hybrid_folllow_up.markdown("""
-            <style>
-            .small-font {
-                font-size:9px;
-            }
-            </style>
-            """, unsafe_allow_html=True,
-        )
-        hybrid_folllow_up.markdown(f'<p class="small-font">{linkify_text(answer_followup)}</p>', unsafe_allow_html=True)
+        hybrid_folllow_up.markdown(f'<span style="font-size:0.8em;">\n{linkify_text(answer_followup)}</span>', unsafe_allow_html=True)
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
     
