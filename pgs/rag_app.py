@@ -55,9 +55,10 @@ def load_llm() -> Tuple[BaseLLM, str]:
         return st_commons.get_cached_local_model(), const.llama3_bos_token
 
 def generate_responses(input_text):
+    status_container = st.container()
     col1, col2, col3 = st.columns(3, gap="medium")
-    with st.status("Generating Responses...", expanded=True) as status:
-        st.write("Loading the LLM model...")
+    with status_container.status("Generating Responses...", expanded=True) as status:
+        status_container.write("Loading the LLM model...")
         llm, bos_token = load_llm()
         # since remote model is more powerful.
         if st.session_state[st_commons.StateVariables.IS_REMOTE_LLM.value]:
@@ -65,14 +66,14 @@ def generate_responses(input_text):
         else:
             top_k = 5
 
-        st.write("Generating response from Vanilla RAG...")
+        status_container.write("Generating response from Vanilla RAG...")
         v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_vanilla = v.invoke(input_text)
         logging.info("generated response from Vanilla RAG")
         col1.markdown("## Vanilla RAG")
         col1.markdown(linkify_text(answer_vanilla))
 
-        st.write("Generating response from Hybrid RAG...")
+        status_container.write("Generating response from Hybrid RAG...")
         h=HybridRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_hybrid = h.invoke(input_text)
         papers_used_in_hybrid = h.used_papers
@@ -80,7 +81,7 @@ def generate_responses(input_text):
         col2.markdown("## Hybrid RAG")
         col2.markdown(linkify_text(answer_hybrid))
 
-        st.write("Generating follow-up details from Hybrid RAG...")
+        status_container.write("Generating follow-up details from Hybrid RAG...")
         answer_followup = h.invoke_followup()
         logging.info("generated follow-up answer")
         col3.markdown("## Follow-up details from Hybrid RAG")
@@ -88,6 +89,7 @@ def generate_responses(input_text):
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
     
+    st.markdown("""---""")
     st.markdown(st_commons.graph_visualisation_markdown)
     st_graph_viz.visualize_graph(papers_used_in_hybrid, graph)
     htmlfile = open(const.TEMP_VISUAL_GRAPH_PATH, 'r', encoding='utf-8')
