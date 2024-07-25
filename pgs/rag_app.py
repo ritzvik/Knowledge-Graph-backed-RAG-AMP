@@ -1,5 +1,6 @@
 from typing import Tuple
 import logging
+import markdown
 from langchain.graphs import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
 from langchain_core.language_models.llms import BaseLLM
@@ -88,7 +89,7 @@ def generate_responses(input_text):
         answer_followup = h.invoke_followup()
         logging.info("generated follow-up answer")
         hybrid_folllow_up.markdown("### Follow-up details")
-        hybrid_folllow_up.markdown(f'<span style="font-size:0.8em;">\n{linkify_text(answer_followup)}</span>', unsafe_allow_html=True)
+        hybrid_folllow_up.html(f'<span style="font-size:0.8em;">\n{markdown.markdown(linkify_text(answer_followup))}</span>', unsafe_allow_html=True)
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
     
