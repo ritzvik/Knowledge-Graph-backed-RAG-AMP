@@ -12,17 +12,17 @@ def _get_raw_auxillary_context_for_papers(paper_ids: List[str], graphDbInstance:
     WHERE p.id in $list
     CALL {
         WITH p
-        MATCH (p)-[:AUTHORED_BY]->(a:Author)<-[:AUTHORED_BY]-(other_paper:Paper)
-        WITH a, COUNT(other_paper) as other_paper_count
-        ORDER BY other_paper_count DESC
+        MATCH (p)-[:AUTHORED_BY]->(a:Author)
+        WITH a, COUNT {(a)<-[:AUTHORED_BY]-(:Paper)} AS paper_written_by_author_count
+        ORDER BY paper_written_by_author_count DESC
         LIMIT 3
         RETURN a
     }
     CALL {
         WITH p
-        MATCH (p)<-[:CITES]-(top_paper:Paper)<-[:CITES]-(other_paper:Paper)
-        WITH top_paper, COUNT(other_paper) as citation_count
-        ORDER BY citation_count DESC
+        MATCH (p)<-[:CITES]-(top_paper:Paper)
+        WITH top_paper, COUNT {(top_paper)<-[:CITES]-(:Paper)} AS papers_citing_top_paper_count
+        ORDER BY papers_citing_top_paper_count DESC
         LIMIT 3
         RETURN top_paper
     }
