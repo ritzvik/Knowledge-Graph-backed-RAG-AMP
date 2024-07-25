@@ -56,7 +56,9 @@ def load_llm() -> Tuple[BaseLLM, str]:
 
 def generate_responses(input_text):
     status_container = st.container()
-    col1, col2, col3 = st.columns(3, gap="medium")
+    col1, col2 = st.columns([0.4, 0.6], gap="small")
+    vanialla_container, hybrid_container = col1.container(border=True), col2.container(border=True)
+    hybrid_response, hybrid_folllow_up = hybrid_container.columns([0.67, 0.33], gap="small")
     with status_container.status("Generating Responses...", expanded=True) as status:
         status.write("Loading the LLM model...")
         llm, bos_token = load_llm()
@@ -70,22 +72,22 @@ def generate_responses(input_text):
         v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_vanilla = v.invoke(input_text)
         logging.info("generated response from Vanilla RAG")
-        col1.markdown("## Vanilla RAG")
-        col1.markdown(linkify_text(answer_vanilla))
+        vanialla_container.markdown("## Vanilla RAG")
+        vanialla_container.markdown(linkify_text(answer_vanilla))
 
         status.write("Generating response from Hybrid RAG...")
         h=HybridRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_hybrid = h.invoke(input_text)
         papers_used_in_hybrid = h.used_papers
         logging.info("generated response from Hybrid RAG")
-        col2.markdown("## Hybrid RAG")
-        col2.markdown(linkify_text(answer_hybrid))
+        hybrid_response.markdown("## Hybrid RAG")
+        hybrid_response.markdown(linkify_text(answer_hybrid))
 
         status.write("Generating follow-up details from Hybrid RAG...")
         answer_followup = h.invoke_followup()
         logging.info("generated follow-up answer")
-        col3.markdown("## Follow-up details from Hybrid RAG")
-        col3.markdown(linkify_text(answer_followup))
+        hybrid_folllow_up.markdown("## Follow-up details from Hybrid RAG")
+        hybrid_folllow_up.markdown(linkify_text(answer_followup))
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
     
