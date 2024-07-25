@@ -51,9 +51,9 @@ def _create_networkx_graph(paper_ids: List[str], graphDbInstance: Neo4jGraph):
     for record in data:
         p, top_paper, author = record['p'], record['top_paper'], record['a']
         unique_papers.update([p['id'], top_paper['id']])
-        G.add_node(top_paper['id'], label=top_paper['title'], color='salmon')
-        G.add_node(p['id'], label=p['title'], color='purple')
-        G.add_node(author['name'], label=author['name'], color='yellow')
+        G.add_node(top_paper['id'], label=top_paper['title'], color='violet')
+        G.add_node(p['id'], label=p['title'], color='blue')
+        G.add_node(author['name'], label=author['name'], color='orange')
         G.add_edges_from([
             (p['id'], author['name'], {'label': 'AUTHORED_BY'}),
         ])

@@ -49,3 +49,13 @@ example_questions = [
 
 local_llm_text = "4-bit quantized Llama-3-8B-Instruct model will be used which will utilise in-session GPU. The model has already been quantized as part of the AMP steps."
 remote_llm_text = "Please use an OpenAI API compatible remotely hosted Llama-3-8B-Instruct model."
+graph_visualisation_markdown = """
+The graph generated here as a 1:1 depiction of the follow-up details of the papers above.  We define the following terms:
+- **Related Papers**: Top 3 papers that cite the given paper and received the most citations.
+- **Top Authors**: Top 3 authors of the paper who have received the most citations.
+
+The papers and authors are depicted by nodes below. The type of node is indicated by the color:
+- **Paper**: :blue[Blue]
+- **Related Papers**: :violet[Violet]
+- **Top Authors**: :orange[Orange]
+"""

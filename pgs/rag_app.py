@@ -88,6 +88,7 @@ def generate_responses(input_text):
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
     
+    st.markdown(st_commons.graph_visualisation_markdown)
     st_graph_viz.visualize_graph(papers_used_in_hybrid, graph)
     htmlfile = open(const.TEMP_VISUAL_GRAPH_PATH, 'r', encoding='utf-8')
     htmlfile_source_code = htmlfile.read()
