@@ -11,12 +11,12 @@ remote_model_endpoint, remote_model_id, remote_model_api_key = "", "", ""
 is_remote_llm = False
 
 st.header("Knowledge Graph based RAG Pipeline")
-st.subheader(f"Select the {const.local_model_to_be_quantised.split("/")[1]} variant to use")
+st.subheader(f"Select the {const.local_model_to_be_quantised.split('/')[1]} variant to use")
 
 st.markdown(
     f"""
     The app is designed to use the
-    [{const.local_model_to_be_quantised.split("/")[1]}](https://huggingface.co/{const.local_model_to_be_quantised}), 
+    [{const.local_model_to_be_quantised.split('/')[1]}](https://huggingface.co/{const.local_model_to_be_quantised}), 
     a language model that has been fine-tuned on a variety of tasks.
     You can choose to run the 4-bit quantised model in-session using local GPU,
     or choose to run a remote model compatible with [Open AI API](https://platform.openai.com/docs/api-reference/introduction).
