@@ -59,3 +59,4 @@ The papers and authors are depicted by nodes below. The type of node is indicate
 - **Related Papers**: :violet[Violet]
 - **Top Authors**: :orange[Orange]
 """
+response_container_height = 600

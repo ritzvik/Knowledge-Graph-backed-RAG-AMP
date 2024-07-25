@@ -57,7 +57,8 @@ def load_llm() -> Tuple[BaseLLM, str]:
 def generate_responses(input_text):
     status_container = st.container()
     col1, col2 = st.columns([0.4, 0.6], gap="small")
-    vanialla_container, hybrid_container = col1.container(border=True), col2.container(border=True)
+    vanialla_container = col1.container(height=st_commons.response_container_height, border=True)
+    hybrid_container = col2.container(height=st_commons.response_container_height, border=True)
     hybrid_response, hybrid_folllow_up = hybrid_container.columns([0.67, 0.33], gap="small")
     with status_container.status("Generating Responses...", expanded=True) as status:
         status.write("Loading the LLM model...")
@@ -86,8 +87,16 @@ def generate_responses(input_text):
         status.write("Generating follow-up details from Hybrid RAG...")
         answer_followup = h.invoke_followup()
         logging.info("generated follow-up answer")
-        hybrid_folllow_up.markdown("## Follow-up details from Hybrid RAG")
-        hybrid_folllow_up.markdown(linkify_text(answer_followup))
+        hybrid_folllow_up.markdown("### Follow-up details")
+        hybrid_folllow_up.markdown("""
+            <style>
+            .small-font {
+                font-size:9px;
+            }
+            </style>
+            """, unsafe_allow_html=True,
+        )
+        hybrid_folllow_up.markdown(f'<p class="small-font">{linkify_text(answer_followup)}</p>', unsafe_allow_html=True)
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
     
