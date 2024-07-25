@@ -3,7 +3,6 @@ arxiv==2.1.2
 bitsandbytes==0.43.1
 colbert-ai==0.2.19
 gradio==4.26.0
-huggingface-hub==0.20.3
 kubernetes==29.0.0
 langchain==0.1.20
 langchain-community==0.0.38
