@@ -23,6 +23,6 @@ requests==2.32.3
 streamlit==1.36.0
 tiktoken==0.7.0
 torch==2.2.2
-transformers==4.37.2
-trl==0.4.7
+transformers==4.43.2
+trl==0.9.6
 unstructured==0.13.2
