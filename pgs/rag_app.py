@@ -90,6 +90,7 @@ def generate_responses(input_text):
         logging.info("generated follow-up answer")
         hybrid_folllow_up.markdown("### Follow-up details")
         html_answer_followup = f'<font size="-2">\n{markdown.markdown(linkify_text(answer_followup))}</font>'
+        print(linkify_text(answer_followup))
         print(html_answer_followup)
         hybrid_folllow_up.html(html_answer_followup)
 
