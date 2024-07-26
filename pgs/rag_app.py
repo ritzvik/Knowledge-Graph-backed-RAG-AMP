@@ -60,9 +60,9 @@ def generate_responses(input_text):
     col1, col2 = st.columns([0.4, 0.6], gap="small")
     vanialla_container = col1.container(height=st_commons.response_container_height, border=True)
     hybrid_container = col2.container(height=st_commons.response_container_height, border=True)
-    hybrid_response = hybrid_container.container(height=int(st_commons.response_container_height*0.65), border=False)
+    hybrid_response = hybrid_container.container(height=int(st_commons.response_container_height*0.60), border=False)
     hybrid_container.markdown("---")
-    hybrid_folllow_up = hybrid_container.container(height=int(st_commons.response_container_height*0.33), border=False)
+    hybrid_folllow_up = hybrid_container.container(height=int(st_commons.response_container_height*0.30), border=False)
     with status_container.status("Generating Responses...", expanded=True) as status:
         status.write("Loading the LLM model...")
         llm, bos_token = load_llm()
