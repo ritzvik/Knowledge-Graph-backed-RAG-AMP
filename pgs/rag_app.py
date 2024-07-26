@@ -43,14 +43,7 @@ with st.spinner("Spinning up the Neo4j server..."):
 
 def load_llm() -> Tuple[BaseLLM, str]:
     if st.session_state[st_commons.StateVariables.IS_REMOTE_LLM.value]:
-        remote_llm = getCAIHostedOpenAIModels( 
-            base_url=st.session_state[st_commons.StateVariables.REMOTE_MODEL_ENDPOINT.value],
-            model=st.session_state[st_commons.StateVariables.REMOTE_MODEL_ID.value],
-            api_key=st.session_state[st_commons.StateVariables.REMOTE_MODEL_API_KEY.value],
-            max_tokens=2048,
-            temperature=0.3,
-            stop=const.llama3_stop_token,
-        )
+        x
         return remote_llm, const.llama3_bos_token
     else:
         return st_commons.get_cached_local_model(), const.llama3_bos_token
@@ -60,7 +53,9 @@ def generate_responses(input_text):
     col1, col2 = st.columns([0.4, 0.6], gap="small")
     vanialla_container = col1.container(height=st_commons.response_container_height, border=True)
     hybrid_container = col2.container(height=st_commons.response_container_height, border=True)
-    hybrid_response, hybrid_folllow_up = hybrid_container.columns([0.67, 0.33], gap="small")
+    hybrid_response = hybrid_container.container(height=int(st_commons.response_container_height*0.68), border=False)
+    hybrid_container.markdown("---")
+    hybrid_folllow_up = hybrid_container.container(height=int(st_commons.response_container_height*0.30), border=False)
     with status_container.status("Generating Responses...", expanded=True) as status:
         status.write("Loading the LLM model...")
         llm, bos_token = load_llm()
