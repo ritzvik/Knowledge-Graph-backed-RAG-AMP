@@ -77,7 +77,7 @@ def create_deployment_spec_for_neo4j():
                     containers=[
                         client.V1Container(
                             name="neo4j",
-                            image="neo4j:5.19.0",
+                            image="neo4j:5.18.0",
                             ports=[
                                 client.V1ContainerPort(container_port=7687, name = "bolt"),
                                 client.V1ContainerPort(container_port=7474, name = "http"),
@@ -90,8 +90,8 @@ def create_deployment_spec_for_neo4j():
                                 client.V1EnvVar(name="NEO4JLABS_PLUGINS", value="[\"apoc\",\"graph-data-science\"]"),
                             ],
                             resources=client.V1ResourceRequirements(
-                                requests={"cpu": "2", "memory": "8Gi"},
-                                limits={"cpu": "2", "memory": "8Gi"},
+                                requests={"cpu": "1", "memory": "4Gi"},
+                                limits={"cpu": "1", "memory": "4Gi"},
                             ),
                             volume_mounts=[
                                 client.V1VolumeMount(
