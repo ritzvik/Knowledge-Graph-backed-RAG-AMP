@@ -58,7 +58,9 @@ def load_llm() -> Tuple[BaseLLM, str]:
 def generate_responses(input_text):
     status_container = st.container()
     col1, col2 = st.columns([0.4, 0.6], gap="small")
-    vanialla_container = col1.container(height=st_commons.response_container_height, border=True)
+    col1_header = col1.container(height=50, border=False)
+    col2_header = col2.container(height=50, border=False)
+    vanilla_container = col1.container(height=st_commons.response_container_height, border=True)
     hybrid_container = col2.container(height=st_commons.response_container_height, border=True)
     hybrid_response = hybrid_container.container(height=int(st_commons.response_container_height*0.60), border=False)
     hybrid_container.markdown("---")
@@ -76,15 +78,15 @@ def generate_responses(input_text):
         v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_vanilla = v.invoke(input_text)
         logging.info("generated response from Vanilla RAG")
-        vanialla_container.markdown("## Vanilla RAG")
-        vanialla_container.markdown(linkify_text(answer_vanilla))
+        col1_header.markdown("## Vanilla RAG")
+        vanilla_container.markdown(linkify_text(answer_vanilla))
 
         status.write("Generating response from Hybrid RAG...")
         h=HybridRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_hybrid = h.invoke(input_text)
         papers_used_in_hybrid = h.used_papers
         logging.info("generated response from Hybrid RAG")
-        hybrid_response.markdown("## Hybrid RAG")
+        col2_header.markdown("## Hybrid RAG")
         hybrid_response.markdown(linkify_text(answer_hybrid))
 
         status.write("Generating follow-up details from Hybrid RAG...")
