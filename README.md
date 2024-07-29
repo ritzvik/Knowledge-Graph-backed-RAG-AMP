@@ -60,7 +60,20 @@ Vector databases store the vector embedding of a content(chunk of text, sound or
 
 ### Retrieval Augmented Generation (RAG)
 
+Retrieval-augmented generation (RAG) is a technique for enhancing the accuracy and reliability of generative AI models with facts fetched from external sources.
 
+Steps involvded in a RAG pipeline (Ref:[Langchain](https://blog.langchain.dev/tutorial-chatgpt-over-your-data/)):
+ - Ingestion of Data
+   - Load data sources into text
+   - Chunk the text: This is necessary because language models generally have a limit to the amount of text they can deal with, so creating as small chunks of text as possible is necessary.
+   - Embed text: this involves creating a numerical embedding for each chunk of text. 
+   - Load embeddings to vectorstore: this involves putting embeddings and documents into a vectorstore(Native vector database or graph database in our case).
+   - ![RAG Ingestion Diagram](./assets/RAG-ingestion.png)
+ - Querying of Data
+   - Use the user query to calculate vector embedding.
+   - Lookup relevant documents: Using the embeddings and vectorstore created during ingestion, we can look up relevant documents for the answer
+   - Generate a response: Given the user query and the relevant documents as context, we can use a language model to generate a response.
+   - ![RAG Query Diagram](./assets/RAG-query.png)
 
 ### Re-Ranking
 
