@@ -58,8 +58,8 @@ def load_llm() -> Tuple[BaseLLM, str]:
 def generate_responses(input_text):
     status_container = st.container()
     col1, col2 = st.columns([0.4, 0.6], gap="small")
-    col1_header = col1.container(height=50, border=False)
-    col2_header = col2.container(height=50, border=False)
+    col1_header = col1.container(border=False)
+    col2_header = col2.container(border=False)
     vanilla_container = col1.container(height=st_commons.response_container_height, border=True)
     hybrid_container = col2.container(height=st_commons.response_container_height, border=True)
     hybrid_response = hybrid_container.container(height=int(st_commons.response_container_height*0.60), border=False)
