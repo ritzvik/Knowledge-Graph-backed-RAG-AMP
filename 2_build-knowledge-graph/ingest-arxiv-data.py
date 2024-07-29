@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from langchain.graphs import Neo4jGraph
-from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores.neo4j_vector import Neo4jVector
 from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
 from langchain.docstore.document import Document
@@ -16,6 +15,7 @@ from utils.data_utils import (
 )
 from utils.neo4j_utils import get_neo4j_credentails, is_neo4j_server_up, reset_neo4j_server, wait_for_neo4j_server
 from utils.arxiv_utils import create_paper_object_from_arxiv_id
+from utils.huggingface_utils import cache_and_load_embedding_model
 
 load_dotenv()
 
@@ -31,7 +31,7 @@ graph = Neo4jGraph(
 graph.query("MATCH (n) DETACH DELETE n")
 graph.query(create_query_for_category_insertion())
 
-embedding = HuggingFaceEmbeddings(model_name=const.embed_model_name, cache_folder=const.EMBED_PATH)
+embedding = cache_and_load_embedding_model()
 
 Neo4jVector.from_existing_graph(
     embedding=embedding,

@@ -3,6 +3,8 @@ import transformers
 from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from langchain.llms import HuggingFacePipeline
 from langchain_core.language_models.llms import BaseLLM
+from langchain_core.embeddings import Embeddings
+from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 
 import utils.constants as const
 
@@ -44,3 +46,7 @@ def load_local_model() -> BaseLLM:
     )
     local_llm = HuggingFacePipeline(pipeline=text_generation_pipeline)
     return local_llm
+
+def cache_and_load_embedding_model() -> Embeddings:
+    embedding = SentenceTransformerEmbeddings(model_name=const.embed_model_name, cache_folder=const.EMBED_PATH, model_kwargs={'trust_remote_code': True})
+    return embedding

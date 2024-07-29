@@ -41,7 +41,7 @@ TEMP_VISUAL_GRAPH_PATH = "./temp-graph.html"
 
 huggingface_token = os.getenv("HF_TOKEN")
 
-embed_model_name="thenlper/gte-large"
+embed_model_name="Alibaba-NLP/gte-large-en-v1.5"
 colbert_model = "colbert-ir/colbertv2.0"
 local_model_to_be_quantised = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 

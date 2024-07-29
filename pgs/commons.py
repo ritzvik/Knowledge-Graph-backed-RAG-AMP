@@ -4,11 +4,10 @@ from enum import Enum
 import time
 import streamlit as st
 import torch
-from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from langchain_core.language_models.llms import BaseLLM
 
 import utils.constants as const
-from utils.huggingface_utils import load_local_model
+from utils.huggingface_utils import load_local_model, cache_and_load_embedding_model
 
 @st.cache_resource(show_spinner=False)
 def get_cached_local_model() -> BaseLLM:
@@ -27,7 +26,7 @@ def get_cached_local_model() -> BaseLLM:
 @st.cache_resource(show_spinner=False)
 def get_cached_embedding_model():
     progress_bar = st.progress(20, f"Loading {const.embed_model_name} embedding model.")
-    embedding = HuggingFaceEmbeddings(model_name=const.embed_model_name, cache_folder=const.EMBED_PATH)
+    embedding = cache_and_load_embedding_model()
     progress_bar.progress(100, "Model loaded successfully.")
     progress_bar.empty()
     return embedding
