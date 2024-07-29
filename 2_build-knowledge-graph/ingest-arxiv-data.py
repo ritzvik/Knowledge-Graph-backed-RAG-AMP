@@ -104,8 +104,8 @@ print(f"Number of chunks to be inserted into the knowledge graph: {len(documents
 document_batch = list()
 batch_size = 50
 for i, doc in enumerate(documents):
+    document_batch.append(doc)
     if len(document_batch) < batch_size and i != len(documents) - 1:
-        document_batch.append(doc)
         continue
     try:
         Neo4jVector.from_documents(

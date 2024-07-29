@@ -56,6 +56,8 @@ Vector databases store the vector embedding of a content(chunk of text, sound or
  - Vector databases offer well-known and easy-to-use features for data storage, like inserting, deleting, and updating data.
  - Vector databases have specialized capability to perform vector similarity search to retreive vector embeddings stored in the database along with the associated content based off some well known similarity metrics(Cosine similarity, or KNN).
 
+*Note*: In our AMP, the Graph Database (Neo4j) also acts as vector database and have vector similarity search capabilities, thanks to [Graph Data Science(GDS)](https://github.com/neo4j/graph-data-science) plugin.
+
 ### Retrieval Augmented Generation (RAG)
 
 
