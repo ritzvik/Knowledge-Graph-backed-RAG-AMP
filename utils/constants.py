@@ -1,11 +1,13 @@
 import os
 
 seed_arxiv_paper_ids = [
+    "1910.01108",
     # https://github.com/aimerou/awesome-ai-papers?tab=readme-ov-file
     "2302.04761",
     "1706.03762",
     "2312.05934",
     "2302.13971",
+    "2112.01488",
     "2305.14314",
     "2303.17564",
     "2310.06825",

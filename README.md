@@ -58,6 +58,10 @@ Vector databases store the vector embedding of a content(chunk of text, sound or
 
 *Note*: In our AMP, the Graph Database (Neo4j) also acts as vector database and have vector similarity search capabilities, thanks to [Graph Data Science(GDS)](https://github.com/neo4j/graph-data-science) plugin.
 
+<img src="./assets/paper_with_chunks.png"  width="50%" height="50%" /><img src="./assets/chunk_attributes.png"  width="40%" height="40%" />
+
+<span class="caption">The diagrams show how chunks are connected to their source paper in the knowledge graph. Each chunk holds the text and the precomputed embedding of the text.</span>
+
 ### Retrieval Augmented Generation (RAG)
 
 Retrieval-augmented generation (RAG) is a technique for enhancing the accuracy and reliability of generative AI models with facts fetched from external sources.
@@ -76,6 +80,36 @@ Steps involvded in a RAG pipeline (Ref:[Langchain](https://blog.langchain.dev/tu
    - ![RAG Query Diagram](./assets/RAG-query.png)
 
 ### Re-Ranking
+
+Reranking is a part of two-stage retreival systems where:
+ 1. Using vector databases and embedding model, we retrieve a set of relevant documents.
+ 2. Reranker model is used to "rerank" the documents retrieved in the first stage, and then we cut-off the context at top `k` results.
+
+#### [ColBERT](https://github.com/stanford-futuredata/ColBERT) based Reranking
+
+ColBERT encodes each passage into a matrix of token-level embeddings. Then at search time, it embeds every query into another matrix (shown in green) and efficiently finds passages that contextually match the query using scalable vector-similarity (`MaxSim`) operators.
+Each passage(or chunk) is assgined a ColBERT score based upon similarity to the user query, and the score can be used to "rerank" chunks retrieved by vector search.
+
+## How does Knowledge Graph fit in our AMP?
+
+We leverage KG in two ways in order to make this RAG system better than plain(vanilla) RAG:
+ 1. We aim to enhance the quality of context retreived by choosing chunks from relatively "high-quality" papers.
+ 2. Provide additional information about the papers used to answer a certain question, which could have been more complex in case of traditional vector databases.
+
+### Hybrid RAG
+
+Since we have a small but related set of AI/ML papers, there would be a lot of "citation" relationships between papers. We define a paper to be of **"Higher Quality"** if it has more number of citations. The number of citations can be computed for a specific paper from the knowledge graph that we have built.
+
+We employ a "hybrid" strategy to retrieve chunks where we take into consideration the semantic similarity as well as the "quality" of the paper the chunk is coming from, before passing it to LLM as context.
+
+#### Hybrid retrieval algorithm for top `k` chunks:
+ 1. Retrieve `4*k` chunks using vector similarity(to the user query) from the Database.
+ 2. Rerank the chunks using [ColBERT](#colbert-based-reranking), cut-off the number of chunks at `2*k`. Store the **ColBERT Score** as well.
+ 3. Calculate a **hybrid score** = `(normalized ColBERT score) + (normalised number of citations to the chunk's paper)`. Rerank again based on the hybris score, and pick top `k` chunks as context.
+
+### Additional Information for papers used.
+
+
 
 ## AMP Flow
 
