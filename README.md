@@ -130,5 +130,8 @@ We instruct the LLM to provide us the [arXiv IDs](https://info.arxiv.org/help/ar
     - Answer using Vanilla RAG, as if we are running a plain old vector database, with no reranking of chunks.
     - Answer using Hybrid RAG, where we rerank the chunks based on the "quality" of the papers.
     - A follow-up information about the papers used to generate the answer in case of Hybrid RAG.
+  
+  3. The page also contains a "graphical" representation of the papers used, related papers and top authors.   
+  ![RAG page](./assets/rag_page_gif.gif)
 
 ## AMP Requirements
