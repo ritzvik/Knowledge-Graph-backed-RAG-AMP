@@ -107,10 +107,28 @@ We employ a "hybrid" strategy to retrieve chunks where we take into consideratio
  2. Rerank the chunks using [ColBERT](#colbert-based-reranking), cut-off the number of chunks at `2*k`. Store the **ColBERT Score** as well.
  3. Calculate a **hybrid score** = `(normalized ColBERT score) + (normalised number of citations to the chunk's paper)`. Rerank again based on the hybris score, and pick top `k` chunks as context.
 
-### Additional Information for papers used.
+### Additional Information for Papers Used
 
+We instruct the LLM to provide us the [arXiv IDs](https://info.arxiv.org/help/arxiv_identifier.html) of the chunks used. We then use the arXiv IDs to extract some additional information about the papers so that user can search more about them. Retrieval of additional information have been made easy by graph databases, which could have been quite tricky in case of tradional vector databases. The information is then passed to the LLM for proper formatting of the response. Some of the information retrieved are:
 
+ - Paper Title
+ - Related Papers: Top 3 most cited papers which also cite the paper in question. Knowledge graph helps in capturing this information.
+ - Top Authors: Top 3 most cited authors of the paper in question.
+ - Summary: Summary of the paper's abstract in two lines.
+<img src="./assets/top_authors_and_related_papers_example.png"  width="50%" height="50%" />
+
+<span class="caption">The image shows "Top Authors" & "Related Papers" for the "Attention Is All You Need" paper.</span>
 
 ## AMP Flow
+
+ 1. The AMP and the underlying promts are designed to run on Llama 3 family of models, especially [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct). The first page gives two choices:
+   - Use in-session 4-bit quantized version of Llama 3.1 Instruct. The model is already cached in the project volume as part of AMP steps.
+   - Bring-Your-Own-Llama-3.1: You can provide OpenAI APi comptatible endpoint, along with Model ID and authorization token. There are various providers offering free tier API usage like [OpenRouter](https://openrouter.ai/models/meta-llama/llama-3.1-8b-instruct:free). Alternatively, you can also use Llama 3.1 hosted on **Cloudera AI Inference** service which has been [tech previewed](https://blog.cloudera.com/cloudera-introduces-ai-inference-service-with-nvidia-nim/).  
+   ![LLM selection page](./assets/llm_selection_page.gif)
+
+ 2. In the next page, we can ask the RAG pipeline AI/ML related question. It will produce 3 outputs:
+    - Answer using Vanilla RAG, as if we are running a plain old vector database, with no reranking of chunks.
+    - Answer using Hybrid RAG, where we rerank the chunks based on the "quality" of the papers.
+    - A follow-up information about the papers used to generate the answer in case of Hybrid RAG.
 
 ## AMP Requirements
