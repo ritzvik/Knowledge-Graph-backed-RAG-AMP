@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 from langchain.graphs import Neo4jGraph
 import networkx as nx
 from pyvis.network import Network
@@ -6,7 +6,7 @@ import streamlit as st
 
 import utils.constants as const
 
-def _get_raw_auxillary_context_for_papers(paper_ids: List[str], graphDbInstance: Neo4jGraph) -> str:
+def _get_raw_auxillary_context_for_papers(paper_ids: List[str], graphDbInstance: Neo4jGraph):
     query = r"""
     MATCH (p:Paper)
     WHERE p.id in $list
@@ -45,17 +45,23 @@ def _get_citation_relationships(arxiv_ids: List[str], graphDbInstance: Neo4jGrap
     return results[0]["node_pairs"]
 
 def _create_networkx_graph(paper_ids: List[str], graphDbInstance: Neo4jGraph):
+    def _get_hover_data(paper: Dict):
+        hover_string = paper['title'] + "\n"
+        hover_string += "Arxiv ID: " + paper['id'] + "\n"
+        hover_string += "Published: " + paper['published'].to_native().strftime("%B %d, %Y")
+        return hover_string
+
     data = _get_raw_auxillary_context_for_papers(paper_ids, graphDbInstance)
     unique_papers = set()
     G = nx.DiGraph()
     for record in data:
         top_paper = record['top_paper']
         unique_papers.add(top_paper['id'])
-        G.add_node(top_paper['id'], label=top_paper['title'], color='violet')
+        G.add_node(top_paper['id'], label=top_paper['title'], color='violet', title=_get_hover_data(top_paper))
     for record in data:
         p, author = record['p'], record['a']
         unique_papers.add(p['id'])
-        G.add_node(p['id'], label=p['title'], color='blue')
+        G.add_node(p['id'], label=p['title'], color='blue', title=_get_hover_data(p))
         G.add_node(author['name'], label=author['name'], color='orange')
         G.add_edges_from([
             (p['id'], author['name'], {'label': 'AUTHORED_BY'}),
