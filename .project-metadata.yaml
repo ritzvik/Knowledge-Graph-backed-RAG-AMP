@@ -23,7 +23,7 @@ tasks:
     script: 0_session-install-dependencies/check-dependencies.py
     short_summary: Check Dependencies
     kernel: python3
-    cpu: 2
+    cpu: 1
     memory: 8
     gpu: 1
   - type: run_session
@@ -31,7 +31,7 @@ tasks:
     script: 0_session-install-dependencies/install-dependencies.py
     short_summary: Install Dependencies
     kernel: python3
-    cpu: 2
+    cpu: 1
     memory: 8
     gpu: 1
   - type: create_job

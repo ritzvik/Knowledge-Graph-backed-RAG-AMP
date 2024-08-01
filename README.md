@@ -4,12 +4,12 @@ This repository demonstrates how to power a RAG(Retrieval Augmented Generation) 
 
 ## AMP Overview
 
-In this AMP, we create a corpus of significant AI/ML papers from [arXiv](https://arxiv.org/), and from first degree citations of these seed papers, resulting in a database of ~350 papers. We expect that these papers would atleast contain some informaton about the latest developments in Artificial Intelligence/Machine Learning/Large Language Models. The AMP user can ask AI/ML related questions, and the RAG pipeline would try to generate answers from the corpus stored in the database.
+In this AMP, we create a corpus of significant AI/ML papers from [arXiv](https://arxiv.org/), and from first degree citations of a few hardcoded seed papers, resulting in a database of ~350 papers. We expect that these papers would contain some informaton about the latest developments in Artificial Intelligence/Machine Learning/Large Language Models. The AMP user can ask AI/ML related questions, and the RAG pipeline would try to generate answers from the corpus stored in the database.
 
 The AMP is powered by Knowledge Graph(backed by [Neo4j](https://neo4j.com/) Database in our case).
 
 Integration of knowledge graph in this RAG pipeline aims to acheive two things:
- - Retrieve better quality text chunks by employing a hybrid retrieval strategy to pass on the LLM as context. In traditional retrieval methods, a vector embedding id calculated for an user input, and chunks are retrieved from a vector database(based on cosine similarity). We will employ a reranking methodology using information from knowledge graph to "rerank" the chunks retrieved using vector similarity, and pass the top **k** chunks as context.
+ - Retrieve better quality text chunks by employing a hybrid retrieval strategy to pass on the LLM as context. In traditional retrieval methods, a vector embedding is calculated for an user input, and chunks are retrieved from a vector database(based on cosine similarity). We will employ a reranking methodology using information from knowledge graph to "rerank" the chunks retrieved using vector similarity, and pass the top **k** chunks as context.
  - Enhance the answer by giving auxillary information about the papers used to construct the answer, give recommendation about other related papers and top authors to the user.
 
 The AMP is designed to run on and expects [Meta-Llama-3.1-8B-Instruct](https://huggingface.co/meta-llama/Meta-Llama-3.1-8B-Instruct) LLM as the backend. The AMP can leverage both remotely hosted LLM (Model URL, ID and API key needs to be passed) or locally(in-session) running LLM. In case of "local" LLM, the AMP is designed to run a 4-bit pre-quantized `Meta-Llama-3.1-8B-Instruct` model(It is pre-quantised as part of AMP steps, no manual intervention required).
@@ -74,8 +74,8 @@ Steps involvded in a RAG pipeline (Ref:[Langchain](https://blog.langchain.dev/tu
    - Load embeddings to vectorstore: this involves putting embeddings and documents into a vectorstore(Native vector database or graph database in our case).
    - ![RAG Ingestion Diagram](./assets/RAG-ingestion.png)
  - Querying of Data
-   - Use the user query to calculate vector embedding.
-   - Lookup relevant documents: Using the embeddings and vectorstore created during ingestion, we can look up relevant documents for the answer
+   - Calculate vector embedding of the user query.
+   - Lookup relevant documents: Using the embedding and vectorstore created during ingestion, we can look up relevant documents for the answer
    - Generate a response: Given the user query and the relevant documents as context, we can use a language model to generate a response.
    - ![RAG Query Diagram](./assets/RAG-query.png)
 
@@ -87,7 +87,7 @@ Reranking is a part of two-stage retreival systems where:
 
 #### [ColBERT](https://github.com/stanford-futuredata/ColBERT) based Reranking
 
-ColBERT encodes each passage into a matrix of token-level embeddings. Then at search time, it embeds every query into another matrix (shown in green) and efficiently finds passages that contextually match the query using scalable vector-similarity (`MaxSim`) operators.
+ColBERT encodes each passage into a matrix of token-level embeddings. Then at search time, it embeds every query into another matrix and efficiently finds passages that contextually match the query using scalable vector-similarity (`MaxSim`) operators.
 Each passage(or chunk) is assgined a ColBERT score based upon similarity to the user query, and the score can be used to "rerank" chunks retrieved by vector search.
 
 ## How does Knowledge Graph fit in our AMP?
@@ -105,7 +105,7 @@ We employ a "hybrid" strategy to retrieve chunks where we take into consideratio
 #### Hybrid retrieval algorithm for top `k` chunks:
  1. Retrieve `4*k` chunks using vector similarity(to the user query) from the Database.
  2. Rerank the chunks using [ColBERT](#colbert-based-reranking), cut-off the number of chunks at `2*k`. Store the **ColBERT Score** as well.
- 3. Calculate a **hybrid score** = `(normalized ColBERT score) + (normalised number of citations to the chunk's paper)`. Rerank again based on the hybris score, and pick top `k` chunks as context.
+ 3. Calculate a **hybrid score** = `(normalized ColBERT score) + (normalised number of citations to the chunk's paper)`. Rerank again based on the hybrid score, and pick top `k` chunks as context.
 
 ### Additional Information for Papers Used
 
@@ -135,3 +135,14 @@ We instruct the LLM to provide us the [arXiv IDs](https://info.arxiv.org/help/ar
   ![RAG page](./assets/rag_page_gif.gif)
 
 ## AMP Requirements
+
+### CPU
+ - CML CPU workloads with resource profiles up to **(2 vCPU/16 GiB memory)** would be provisioned.
+ - **Additional resource of (1 vCPU/4 GiB)** memory would be requested to run Neo4j graph DB instance. There is no requirement of GPU enabled node here, can it may be scheduled on CPU-only node as well.
+
+### GPU
+ - Nvidia GPU with 16GB vRAM is required at minimum(to run both the embedding model & quantized LLM).
+   - Tested with Nvidia Tesla T4 GPU (AWS: [g4dn series](https://aws.amazon.com/ec2/instance-types/g4/), Azure: [Standard_NC4as_T4_v3](https://learn.microsoft.com/en-us/azure/virtual-machines/nct4-v3-series))
+
+### CML Runtime
+ - PBJ-wWrkbench - Python3.10 - Nvidia GPU - 2023.05
