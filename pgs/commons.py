@@ -57,5 +57,7 @@ The papers and authors are depicted by nodes below. The type of node is indicate
 - **Paper**: :blue[Blue]
 - **Related Papers**: :violet[Violet]
 - **Top Authors**: :orange[Orange]
+
+**Please click on the nodes to redirect to the arXiv link of the paper.**
 """
 response_container_height = 750

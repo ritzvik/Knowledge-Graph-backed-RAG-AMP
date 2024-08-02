@@ -57,12 +57,12 @@ def _create_networkx_graph(paper_ids: List[str], graphDbInstance: Neo4jGraph):
     for record in data:
         top_paper = record['top_paper']
         unique_papers.add(top_paper['id'])
-        G.add_node(top_paper['id'], label=top_paper['title'], color='violet', title=_get_hover_data(top_paper))
+        G.add_node(top_paper['id'], label=top_paper['title'], color='violet', title=_get_hover_data(top_paper), node_type='Paper')
     for record in data:
         p, author = record['p'], record['a']
         unique_papers.add(p['id'])
-        G.add_node(p['id'], label=p['title'], color='blue', title=_get_hover_data(p))
-        G.add_node(author['name'], label=author['name'], color='orange')
+        G.add_node(p['id'], label=p['title'], color='blue', title=_get_hover_data(p), node_type='Paper')
+        G.add_node(author['name'], label=author['name'], color='orange', node_type='Author')
         G.add_edges_from([
             (p['id'], author['name'], {'label': 'AUTHORED_BY'}),
         ])
@@ -81,4 +81,20 @@ def visualize_graph(paper_ids: List[str], graphDbInstance: Neo4jGraph):
     net.from_nx(G)
     progress_bar.progress(90, "Saving graph.")
     net.show(const.TEMP_VISUAL_GRAPH_PATH)
+    # make the paper nodes clickable
+    with open(const.TEMP_VISUAL_GRAPH_PATH, "r") as f:
+        html_content = f.read()
+        content_to_be_added = """
+        network.on( 'click', function(properties) {
+            var ids = properties.nodes;
+            var clickedNode = nodes.get(ids)[0];
+            if (clickedNode.node_type == "Paper") {
+                window.open('https://arxiv.org/abs/'+clickedNode.id, '_blank');
+            }
+        });
+        """
+        string_to_find = "vis.Network(container, data, options);"
+        html_content = html_content.replace(string_to_find, string_to_find + content_to_be_added)
+    with open(const.TEMP_VISUAL_GRAPH_PATH, "w") as f:
+        f.write(html_content)
     progress_bar.empty()
