@@ -9,7 +9,7 @@ if not is_neo4j_server_up():
 
 cwd = os.getcwd()
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
 pg = st.navigation(
     [
         st.Page(cwd+"/pgs/llm_selection.py", title="LLM Selection", icon=":material/tv_options_edit_channels:"),

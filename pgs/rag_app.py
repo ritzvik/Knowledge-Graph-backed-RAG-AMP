@@ -22,7 +22,9 @@ st.header("Knowledge Graph based RAG Pipeline")
 st.subheader("Ask any AI/ML related question")
 
 if st_commons.StateVariables.IS_REMOTE_LLM.value not in st.session_state:
-    st.warning("Please select the LLM model first.", icon=":material/warning:")
+    # Default to local LLM in case of no selection.
+    st_commons.get_cached_local_model()
+    st.session_state[st_commons.StateVariables.IS_REMOTE_LLM.value] = False
 
 with st.spinner("Spinning up the Neo4j server..."):
     if not is_neo4j_server_up():
