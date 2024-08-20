@@ -67,6 +67,7 @@ def generate_responses_v2(input_text):
     kg_answer_container = kg_col.container(height=250, border=False)
     kg_col.markdown("---")
     kg_additional_container = kg_col.container(height=250, border=False)
+    kg_col.markdown("---")
     
     with status_container.status("Generating Responses...", expanded=True) as status:
         status.write("Loading the LLM model...")
@@ -87,20 +88,19 @@ def generate_responses_v2(input_text):
         kg_additional_container.markdown("### Additional Context")
         kg_additional_container.markdown(linkify_text(kg_additional_context))
 
+        st_graph_viz.visualize_graph(papers_used_in_kg_answer, graph)
+        htmlfile = open(const.TEMP_VISUAL_GRAPH_PATH, 'r', encoding='utf-8')
+        htmlfile_source_code = htmlfile.read()
+        with kg_col:
+            components.html(htmlfile_source_code, height=800, scrolling=True)
+            st.markdown(st_commons.graph_visualisation_markdown)
+
         status.write("Generating response from VanillaRAG...")
         v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_vanilla = v.invoke(input_text)
         vanilla_col.markdown(linkify_text(answer_vanilla))
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
-
-        with vanilla_col:
-            st.markdown("# TEST")
-
-    st_graph_viz.visualize_graph(papers_used_in_kg_answer, graph)
-    htmlfile = open(const.TEMP_VISUAL_GRAPH_PATH, 'r', encoding='utf-8')
-    htmlfile_source_code = htmlfile.read()
-    components.html(htmlfile_source_code, height=800, scrolling=True)
 
                       
 def generate_responses(input_text):
