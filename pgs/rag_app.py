@@ -57,6 +57,49 @@ def load_llm() -> Tuple[BaseLLM, str]:
     else:
         return st_commons.get_cached_local_model(), const.llama3_bos_token
 
+def generate_responses_v2(input_text):
+    status_container = st.container()
+    kg_col, vanilla_col = st.columns([0.65, 0.35], gap="small")
+    kg_col_header, vanilla_col_header = kg_col.container(border=False), vanilla_col.container(border=False)
+    kg_col_header.markdown("## KnowledgeGraphRAG")
+    vanilla_col_header.markdown("## VanillaRAG")
+
+    kg_answer_container = kg_col.container(height=300, border=False)
+    kg_col.markdown("---")
+    kg_additional_container = kg_col.container(height=300, border=False)
+    
+    with status_container.status("Generating Responses...", expanded=True) as status:
+        status.write("Loading the LLM model...")
+        llm, bos_token = load_llm()
+        # since remote model is more powerful.
+        if st.session_state[st_commons.StateVariables.IS_REMOTE_LLM.value]:
+            top_k = 7
+        else:
+            top_k = 5
+
+        status.write("Generating response from KnowledgeGraphRAG...")
+        h=HybridRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
+        answer_kg = h.invoke(input_text)
+        papers_used_in_kg_answer = h.used_papers
+        kg_answer_container.markdown(linkify_text(answer_kg))
+        status.write("Generating additional details about the asnwer...")
+        kg_additional_context = h.invoke_followup()
+        kg_additional_container.markdown("### Additional Context")
+        kg_additional_container.markdown(linkify_text(kg_additional_context))
+
+        st_graph_viz.visualize_graph(papers_used_in_kg_answer, graph)
+        htmlfile = open(const.TEMP_VISUAL_GRAPH_PATH, 'r', encoding='utf-8')
+        htmlfile_source_code = htmlfile.read()
+        components.html(htmlfile_source_code, height=800, scrolling=True)
+
+        status.write("Generating response from VanillaRAG...")
+        v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
+        answer_vanilla = v.invoke(input_text)
+        vanilla_col.markdown(linkify_text(answer_vanilla))
+
+        status.update(label="Answer Generation Complete", state="complete", expanded=False)
+
+                      
 def generate_responses(input_text):
     status_container = st.container()
     col1, col2 = st.columns([0.4, 0.6], gap="small")
@@ -116,4 +159,4 @@ with st.form('my_form'):
     text = st.text_area('Enter question:', value="", disabled=(question_from_dropdown is not None))
     submitted = st.form_submit_button('Submit')
     if submitted:
-        generate_responses(question_from_dropdown if question_from_dropdown is not None else text)
+        generate_responses_v2(question_from_dropdown if question_from_dropdown is not None else text)
