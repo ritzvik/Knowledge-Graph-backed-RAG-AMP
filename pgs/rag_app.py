@@ -156,25 +156,22 @@ def generate_responses(input_text):
 
 with st.form('my_form'):
     input_text = ""
-    def text_area_callback():
-        global input_text
-        input_text = st.text_area(
-            'Enter question:',
-            value="",
-            disabled=(
-                (st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value in st.session_state)
-                and
-                (st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value] is not None)
-            ),
-            height=30,
-        )
     st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value] = st.selectbox(
         'Choose from our pre-curated example questions.',
         st_commons.example_questions,
         index=None,
         placeholder="Select an example question...",
     )
-    text_area_callback()
+    input_text = st.text_area(
+        'Enter question:',
+        value="",
+        disabled=(
+            (st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value in st.session_state)
+            and
+            (st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value] is not None)
+        ),
+        height=30,
+    )
     submitted = st.form_submit_button('Submit')
     question_from_dropdown = st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value]
     if submitted:
