@@ -93,7 +93,7 @@ def generate_responses_v2(input_text):
         htmlfile = open(const.TEMP_VISUAL_GRAPH_PATH, 'r', encoding='utf-8')
         htmlfile_source_code = htmlfile.read()
         with kg_col:
-            components.html(htmlfile_source_code, height=250, scrolling=True)
+            components.html(htmlfile_source_code, height=350, scrolling=True)
         kg_col.markdown(st_commons.graph_visualisation_markdown)
 
         status.write("Generating response from VanillaRAG...")
