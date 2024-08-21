@@ -18,7 +18,7 @@ import pgs.graph_visualisation as st_graph_viz
 
 embedding = st_commons.get_cached_embedding_model()
 
-st.header("Knowledge Graph based RAG Pipeline")
+st.header("Knowledge Graph powered RAG")
 st.subheader("Ask any AI/ML related question")
 
 if st_commons.StateVariables.IS_REMOTE_LLM.value not in st.session_state:
@@ -61,10 +61,11 @@ def generate_responses_v2(input_text):
     status_container = st.container()
     kg_col, vanilla_col = st.columns([0.65, 0.35], gap="small")
     kg_col_header, vanilla_col_header = kg_col.container(border=False), vanilla_col.container(border=False)
-    kg_col_header.markdown("## KnowledgeGraphRAG")
-    vanilla_col_header.markdown("## VanillaRAG")
+    kg_col_header.markdown("## Knowledge Graph RAG")
+    vanilla_col_header.markdown("## Vanilla RAG")
 
     kg_answer_container = kg_col.container(height=250, border=False)
+    vanilla_answer_container = vanilla_col.container(height=250, border=False)
     
     with status_container.status("Generating Responses...", expanded=True) as status:
         status.write("Loading the LLM model...")
@@ -85,7 +86,7 @@ def generate_responses_v2(input_text):
         status.write("Generating additional details about the answer...")
         kg_additional_container = kg_col.container(height=250, border=False)
         kg_additional_context = h.invoke_followup()
-        kg_additional_container.markdown("### Additional Context")
+        kg_additional_container.markdown("### Related Papers and Authors")
         kg_additional_container.markdown(linkify_text(kg_additional_context))
         kg_col.markdown("---")
 
@@ -99,7 +100,7 @@ def generate_responses_v2(input_text):
         status.write("Generating response from VanillaRAG...")
         v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_vanilla = v.invoke(input_text)
-        vanilla_col.markdown(linkify_text(answer_vanilla))
+        vanilla_answer_container.markdown(linkify_text(answer_vanilla))
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
 
@@ -154,13 +155,19 @@ def generate_responses(input_text):
     components.html(htmlfile_source_code, height=800, scrolling=True)
 
 with st.form('my_form'):
+    question_from_dropdown = None
+    input_text = ""
+    def text_area_callback():
+        global input_text, question_from_dropdown
+        input_text = st.text_area('Enter question:', value="", disabled=(question_from_dropdown is not None), height=30)
     question_from_dropdown = st.selectbox(
         'Choose from our pre-curated example questions.',
         st_commons.example_questions,
         index=None,
         placeholder="Select an example question...",
+        on_change=text_area_callback,
     )
-    text = st.text_area('Enter question:', value="", disabled=(question_from_dropdown is not None))
+    text_area_callback()
     submitted = st.form_submit_button('Submit')
     if submitted:
-        generate_responses_v2(question_from_dropdown if question_from_dropdown is not None else text)
+        generate_responses_v2(question_from_dropdown if question_from_dropdown is not None else input_text)
