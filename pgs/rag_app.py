@@ -156,7 +156,7 @@ def generate_responses(input_text):
 
 with st.form('my_form'):
     input_text = ""
-    st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value] = st.selectbox(
+    question_from_dropdown = st.selectbox(
         'Choose from our pre-curated example questions.',
         st_commons.example_questions,
         index=None,
@@ -166,13 +166,10 @@ with st.form('my_form'):
         'Enter question:',
         value="",
         disabled=(
-            (st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value in st.session_state)
-            and
-            (st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value] is not None)
+            (question_from_dropdown is not None)
         ),
         height=30,
     )
     submitted = st.form_submit_button('Submit')
-    question_from_dropdown = st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value]
     if submitted:
         generate_responses_v2(question_from_dropdown if question_from_dropdown is not None else input_text)
