@@ -163,7 +163,7 @@ with st.form('my_form'):
         placeholder="Select an example question...",
     )
     input_text = st.text_area(
-        'Enter question:',
+        '',
         value="",
         disabled=(
             (question_from_dropdown is not None)
