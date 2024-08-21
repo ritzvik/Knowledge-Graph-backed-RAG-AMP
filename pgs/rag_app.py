@@ -76,7 +76,7 @@ def generate_responses_v2(input_text):
         else:
             top_k = 5
 
-        status.write("Generating response from KnowledgeGraphRAG...")
+        status.write("Generating response from Knowledge Graph RAG...")
         h=HybridRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_kg = h.invoke(input_text)
         papers_used_in_kg_answer = h.used_papers
@@ -97,7 +97,7 @@ def generate_responses_v2(input_text):
             components.html(htmlfile_source_code, height=350, scrolling=True)
         kg_col.markdown(st_commons.graph_visualisation_markdown)
 
-        status.write("Generating response from VanillaRAG...")
+        status.write("Generating response from Vanilla RAG...")
         v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_vanilla = v.invoke(input_text)
         vanilla_answer_container.markdown(linkify_text(answer_vanilla))
