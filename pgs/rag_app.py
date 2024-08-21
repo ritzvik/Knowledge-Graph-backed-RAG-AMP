@@ -173,7 +173,6 @@ with st.form('my_form'):
         st_commons.example_questions,
         index=None,
         placeholder="Select an example question...",
-        on_change=text_area_callback,
     )
     text_area_callback()
     submitted = st.form_submit_button('Submit')
