@@ -168,7 +168,7 @@ with st.form('my_form'):
         disabled=(
             (question_from_dropdown is not None)
         ),
-        height=30,
+        height=15,
     )
     submitted = st.form_submit_button('Submit')
     if submitted:
