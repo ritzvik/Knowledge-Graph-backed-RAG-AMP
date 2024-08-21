@@ -155,12 +155,20 @@ def generate_responses(input_text):
     components.html(htmlfile_source_code, height=800, scrolling=True)
 
 with st.form('my_form'):
-    question_from_dropdown = None
     input_text = ""
     def text_area_callback():
-        global input_text, question_from_dropdown
-        input_text = st.text_area('Enter question:', value="", disabled=(question_from_dropdown is not None), height=30)
-    question_from_dropdown = st.selectbox(
+        global input_text
+        input_text = st.text_area(
+            'Enter question:',
+            value="",
+            disabled=(
+                (st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value in st.session_state)
+                and
+                (st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value] is not None)
+            ),
+            height=30,
+        )
+    st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value] = st.selectbox(
         'Choose from our pre-curated example questions.',
         st_commons.example_questions,
         index=None,
@@ -169,5 +177,6 @@ with st.form('my_form'):
     )
     text_area_callback()
     submitted = st.form_submit_button('Submit')
+    question_from_dropdown = st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value]
     if submitted:
         generate_responses_v2(question_from_dropdown if question_from_dropdown is not None else input_text)
