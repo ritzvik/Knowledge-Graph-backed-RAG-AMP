@@ -52,6 +52,6 @@ if is_remote_llm:
 else:
     st.markdown(f":gray[{st_commons.local_llm_text}]")
 
-llm_chosen = st.button('Apply preferences and continue to application', on_click=choose_llm_action)
+llm_chosen = st.button('Apply preferences and return to application', on_click=choose_llm_action)
 if llm_chosen:
     st.switch_page(cwd+"/pgs/rag_app.py")
