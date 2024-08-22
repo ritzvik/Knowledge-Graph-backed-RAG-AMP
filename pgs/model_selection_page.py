@@ -54,4 +54,4 @@ else:
 
 llm_chosen = st.button('Apply preferences and return to application', on_click=choose_llm_action)
 if llm_chosen:
-    st.switch_page(cwd+"/pgs/rag_app.py")
+    st.switch_page(cwd+"/pgs/rag_app_page.py")
