@@ -65,13 +65,12 @@ def format_context(paper_chunks: List[PaperChunk]):
     for val in chunk_mappings.values():
         paper: IngestablePaper = val['paper']
         st.markdown(f"""
-Arxiv ID: [{paper.arxiv_id}]({paper.arxiv_link})
-Title: {paper.title}
+Arxiv ID: [{paper.arxiv_id}]({paper.arxiv_link})\n
+Title: {paper.title}\n
 Citiation Count: {paper.citation_count}
 """)
-        with st.expander("Show Chunks", expanded=False):
-            for chunk in val['chunks']:
-                st.markdown(chunk)
+        if st.checkbox("Show Chunks"):
+            st.markdown("\n\n".join(val['chunks']))
 
 def generate_responses_v2(input_text):
     status_container = st.container()
