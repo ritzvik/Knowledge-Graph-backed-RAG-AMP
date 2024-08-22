@@ -19,17 +19,12 @@ with st.spinner("Spinning up the Neo4j server..."):
     )
 
 
-def _get_raw_papers(graphDbInstance: Neo4jGraph):
+def _get_all_papers(graphDbInstance: Neo4jGraph):
     query = r"""
     MATCH (p:Paper)
-    CALL {
-        WITH p
-        MATCH (p)-[:AUTHORED_BY]->(a:Author)
-        WITH a, COUNT {(a)<-[:AUTHORED_BY]-(:Paper)} AS paper_written_by_author_count
-        ORDER BY paper_written_by_author_count DESC
-        RETURN a
-    }
-    RETURN p, a
+    WITH p, COUNT {(p)<-[:CITES]-(:Paper)} AS citation_count
+    ORDER BY citation_count DESC
+    RETURN p
     """
     results = graphDbInstance.query(query)
     return results
@@ -73,7 +68,18 @@ def visualize_full_graph(graphDbInstance: Neo4jGraph):
     net.from_nx(G)
     net.show(const.TEMP_VISUAL_FULL_GRAPH_PATH)
 
-visualize_full_graph(graph)
-htmlfile = open(const.TEMP_VISUAL_FULL_GRAPH_PATH, 'r', encoding='utf-8')
-htmlfile_source_code = htmlfile.read()
-components.html(htmlfile_source_code, height=800, scrolling=True)
+paper_col, viz_col = st.columns([1, 1], gap="small")
+
+all_papers_data = _get_all_papers(graph)
+for record in all_papers_data:
+    paper = record['p']
+    arxiv_id = paper['id']
+    arxiv_link = paper['arxiv_link']
+    published_string = paper['published'].to_native().strftime("%B %d, %Y")
+    paper_title = paper['title']
+    paper_col.markdown(f"""
+**Arxiv ID**: [{arxiv_id}]({arxiv_link})  
+**Title**: {paper_title}  
+**Published On**: {published_string}                    
+""")
+    paper_col.markdown("---")
