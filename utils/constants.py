@@ -48,6 +48,7 @@ seed_arxiv_paper_ids = [
 EMBED_PATH = "./embed_models"
 MODELS_PATH = "./models"
 TEMP_VISUAL_GRAPH_PATH = "./temp-graph.html"
+TEMP_VISUAL_FULL_GRAPH_PATH = "./temp-full-graph.html"
 
 huggingface_token = os.getenv("HF_TOKEN")
 
