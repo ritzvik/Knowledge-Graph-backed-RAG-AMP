@@ -12,7 +12,6 @@ from utils.arxiv_utils import linkify_text, PaperChunk, IngestablePaper
 from utils.neo4j_utils import get_neo4j_credentails, is_neo4j_server_up, wait_for_neo4j_server
 from utils.knowledge_graph_rag import KnowledgeGraphRAG
 from utils.vanilla_rag import VanillaRAG
-import utils.change_streamlit_nesting_behaviour
 import pgs.commons as st_commons
 import pgs.graph_visualisation as st_graph_viz
 
@@ -66,11 +65,12 @@ def format_context(paper_chunks: List[PaperChunk]):
     for val in chunk_mappings.values():
         paper: IngestablePaper = val['paper']
         st.markdown(f"""
-Arxiv ID: [{paper.arxiv_id}]({paper.arxiv_link})\n
-Title: {paper.title}\n
-Citiation Count: {paper.citation_count}
+Arxiv ID: [{paper.arxiv_id}]({paper.arxiv_link})  
+Title: {paper.title}  
+Citiation Count: {paper.citation_count}  
+Chunks Used:
 """)
-        with st.expander("Chunks Used:", expanded=False):
+        with st.container(border=True, height=100):
             st.markdown("\n\n".join(val['chunks']))
 
 def generate_responses_v2(input_text):
