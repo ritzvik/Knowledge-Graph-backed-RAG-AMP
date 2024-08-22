@@ -81,6 +81,9 @@ def generate_responses_v2(input_text):
             [data-testid="column"]:nth-child(2){
                 background-color: #F6F6F6;
             }
+            [data-testid="column"]:nth-child(1){
+                background-color: #FAFAFA;
+            }
         </style>
         """, unsafe_allow_html=True
     )
