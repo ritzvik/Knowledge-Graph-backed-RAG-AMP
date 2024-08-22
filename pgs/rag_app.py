@@ -201,8 +201,8 @@ with st.form('my_form'):
         placeholder="Select an example question...",
     )
     input_text = st.text_area(
-        '',
-        value="...Or ask your own AI/ML related question here.",
+        '...Or ask your own AI/ML related question here.',
+        value="",
         disabled=(
             (st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value in st.session_state)
             and
