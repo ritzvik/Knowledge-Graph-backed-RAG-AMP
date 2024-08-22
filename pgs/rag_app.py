@@ -80,7 +80,7 @@ def generate_responses_v2(input_text):
     vanilla_col_header.markdown("## Vanilla RAG")
 
     if kg_col.checkbox("Test Checkbox", key="test_checkbox"):
-        st.markdown("### Checkbox is checked")
+        st.text_input('test input')
 
     kg_answer_container = kg_col.container(height=250, border=False)
     vanilla_answer_container = vanilla_col.container(height=250, border=False)
