@@ -115,11 +115,11 @@ for record in all_papers_data:
     arxiv_link = paper['arxiv_link']
     published_string = paper['published'].to_native().strftime("%B %d, %Y")
     paper_title = paper['title']
-    paper_col.markdown(f"""
+    paper_container.markdown(f"""
 **Arxiv ID**: [{arxiv_id}]({arxiv_link})  
 **Title**: {paper_title}  
 **Published On**: {published_string}     
 **Citiation Count**: {citation_count}               
 """)
-    paper_col.button("Visualize as Knowledge Graph", key="button--"+arxiv_id, on_click=button_callback, args=(arxiv_id,))
-    paper_col.markdown("---")
+    paper_container.button("Visualize as Knowledge Graph", key="button--"+arxiv_id, on_click=button_callback, args=(arxiv_id,))
+    paper_container.markdown("---")
