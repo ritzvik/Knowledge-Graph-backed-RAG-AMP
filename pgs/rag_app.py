@@ -76,6 +76,14 @@ Chunks Used:
 def generate_responses_v2(input_text):
     status_container = st.container()
     kg_col, vanilla_col = st.columns([0.65, 0.35], gap="small")
+    st.markdown("""
+        <style>
+            [data-testid="column"]:nth-child(2){
+                background-color: lightgrey;
+            }
+        </style>
+        """, unsafe_allow_html=True
+    )
     kg_col_header, vanilla_col_header = kg_col.container(border=False), vanilla_col.container(border=False)
     kg_col_header.markdown("## Knowledge Graph RAG")
     vanilla_col_header.markdown("## Vanilla RAG")
