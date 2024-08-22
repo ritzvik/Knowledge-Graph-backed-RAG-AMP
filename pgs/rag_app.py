@@ -79,6 +79,9 @@ def generate_responses_v2(input_text):
     kg_col_header.markdown("## Knowledge Graph RAG")
     vanilla_col_header.markdown("## Vanilla RAG")
 
+    if kg_col.checkbox("Test Checkbox", key="test_checkbox"):
+        st.markdown("### Checkbox is checked")
+
     kg_answer_container = kg_col.container(height=250, border=False)
     vanilla_answer_container = vanilla_col.container(height=250, border=False)
     
