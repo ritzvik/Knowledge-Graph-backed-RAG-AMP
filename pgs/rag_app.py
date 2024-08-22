@@ -79,7 +79,7 @@ def generate_responses_v2(input_text):
     st.markdown("""
         <style>
             [data-testid="column"]:nth-child(2){
-                background-color: lightgrey;
+                background-color: #F6F6F6;
             }
         </style>
         """, unsafe_allow_html=True
