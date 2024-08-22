@@ -69,8 +69,9 @@ Arxiv ID: [{paper.arxiv_id}]({paper.arxiv_link})\n
 Title: {paper.title}\n
 Citiation Count: {paper.citation_count}
 """)
-        if st.checkbox("Show Chunks", key=f"show_chunks_{paper.arxiv_id}_checkbox"):
-            st.markdown("\n\n".join(val['chunks']))
+        container = st.container(key=f"container_in_context_{paper.arxiv_id}")
+        on_change_func = lambda: container.markdown("\n\n".join(val['chunks']))
+        ticked = st.checkbox("Show Chunks", key=f"show_chunks_{paper.arxiv_id}_checkbox", on_change=on_change_func)
 
 def generate_responses_v2(input_text):
     status_container = st.container()
@@ -78,9 +79,6 @@ def generate_responses_v2(input_text):
     kg_col_header, vanilla_col_header = kg_col.container(border=False), vanilla_col.container(border=False)
     kg_col_header.markdown("## Knowledge Graph RAG")
     vanilla_col_header.markdown("## Vanilla RAG")
-
-    if kg_col.checkbox("Test Checkbox", key="test_checkbox"):
-        st.text_input('test input')
 
     kg_answer_container = kg_col.container(height=250, border=False)
     vanilla_answer_container = vanilla_col.container(height=250, border=False)
