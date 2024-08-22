@@ -12,6 +12,7 @@ from utils.arxiv_utils import linkify_text, PaperChunk, IngestablePaper
 from utils.neo4j_utils import get_neo4j_credentails, is_neo4j_server_up, wait_for_neo4j_server
 from utils.knowledge_graph_rag import KnowledgeGraphRAG
 from utils.vanilla_rag import VanillaRAG
+import utils.change_streamlit_nesting_behaviour
 import pgs.commons as st_commons
 import pgs.graph_visualisation as st_graph_viz
 
@@ -69,9 +70,8 @@ Arxiv ID: [{paper.arxiv_id}]({paper.arxiv_link})\n
 Title: {paper.title}\n
 Citiation Count: {paper.citation_count}
 """)
-        container = st.container(key=f"container_in_context_{paper.arxiv_id}")
-        on_change_func = lambda: container.markdown("\n\n".join(val['chunks']))
-        ticked = st.checkbox("Show Chunks", key=f"show_chunks_{paper.arxiv_id}_checkbox", on_change=on_change_func)
+        with st.expander("Chunks Used:", expanded=False):
+            st.markdown("\n\n".join(val['chunks']))
 
 def generate_responses_v2(input_text):
     status_container = st.container()
