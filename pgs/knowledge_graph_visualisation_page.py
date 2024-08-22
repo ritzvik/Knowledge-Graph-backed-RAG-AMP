@@ -93,7 +93,7 @@ def visualise_first_and_second_degree_cited_by_papers(arxiv_id: str, graphDbInst
     net.show(const.TEMP_VISUAL_1_2_GRAPH_PATH)
 
 paper_col, viz_col = st.columns([0.4, 0.6], gap="small")
-paper_col.markdown("<h2>ArXiv Paper in the Knowledge Graph</h2>", unsafe_allow_html=True)
+paper_col.markdown("<h2>ArXiv papers in the Knowledge Graph</h2>", unsafe_allow_html=True)
 paper_container = paper_col.container(height=800, border=False)
 graph_header = viz_col.container(border=False)
 graph_container = viz_col.container(height=800, border=False)
