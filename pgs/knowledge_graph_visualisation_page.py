@@ -29,32 +29,56 @@ def _get_all_papers(graphDbInstance: Neo4jGraph):
     results = graphDbInstance.query(query)
     return results
 
-def _get_all_citation_relationships(graphDbInstance: Neo4jGraph):
+def _get_first_and_second_order_citing_papers(arxiv_id: str, graphDbInstance: Neo4jGraph):
+    query = r"""
+    MATCH (p:Paper {id: "$arxiv_id"})
+    RETURN {
+        paper: p,
+        p1s: COLLECT {MATCH (p)<--(p1:Paper) RETURN p1},
+        p2s: COLLECT {MATCH (p)<--(:Paper)<--(p2:Paper) RETURN p2}
+    } AS result
+    """.replace("$arxiv_id", arxiv_id)
+    results = graphDbInstance.query(query)
+    return results
+
+def _get_citation_relationships(arxiv_ids: List[str], graphDbInstance: Neo4jGraph):
     query = r"""
     MATCH (p:Paper)
+    WHERE p.id in $list
     WITH COLLECT(ELEMENTID(p)) as paper_ids
     CALL apoc.algo.cover(paper_ids)
     YIELD rel
     WITH COLLECT(rel) AS citations
     RETURN [r IN citations | [startNode(r).id, endNode(r).id]] AS node_pairs
-    """
+    """.replace("$list", str(arxiv_ids))
     results = graphDbInstance.query(query)
     return results[0]["node_pairs"]
 
-def _create_full_knowledege_base_networkX_graph(graphDbInstance: Neo4jGraph) -> nx.Graph:
+def _create_knowledege_base_networkX_graph(arxiv_id: str, graphDbInstance: Neo4jGraph) -> nx.Graph:
     def _get_hover_data(paper: Dict):
         hover_string = paper['title'] + "\n"
         hover_string += "Arxiv ID: " + paper['id'] + "\n"
         hover_string += "Published: " + paper['published'].to_native().strftime("%B %d, %Y")
         return hover_string
-    data = _get_raw_papers(graphDbInstance)
+    data = _get_first_and_second_order_citing_papers(arxiv_id, graphDbInstance)
     unique_papers = set()
+    paper = data[0]['result']['paper']
+    p1s = data[0]['result']['p1s']
+    p2s = data[0]['result']['p2s']
     G = nx.DiGraph()
-    for record in data:
-        paper = record['p']
-        unique_papers.add(paper['id'])
-        G.add_node(paper['id'], color='blue', title=_get_hover_data(paper), node_type='Paper')
-    node_pairs = _get_all_citation_relationships(graphDbInstance)
+    G.add_node(paper['id'], label=paper['title'], color='blue', title=_get_hover_data(paper), node_type='Paper')
+    unique_papers.add(paper['id'])
+    for p1 in p1s:
+        if p1['id'] in unique_papers:
+            continue
+        G.add_node(p1['id'], label=p1['title'], color='violet', title=_get_hover_data(p1), node_type='Paper')
+        unique_papers.add(p1['id'])
+    for p2 in p2s:
+        if p2['id'] in unique_papers:
+            continue
+        G.add_node(p2['id'], label=p2['title'], color='green', title=_get_hover_data(p2), node_type='Paper')
+        unique_papers.add(p2['id'])
+    node_pairs = _get_citation_relationships(list(unique_papers),graphDbInstance)
     for pair in node_pairs:
         G.add_edges_from([
             (pair[0], pair[1], {'label': 'CITES'}),
@@ -62,13 +86,21 @@ def _create_full_knowledege_base_networkX_graph(graphDbInstance: Neo4jGraph) -> 
     return G
 
 
-def visualize_full_graph(graphDbInstance: Neo4jGraph):
-    G = _create_full_knowledege_base_networkX_graph(graphDbInstance)
+def visualise_first_and_second_degree_cited_by_papers(arxiv_id: str, graphDbInstance: Neo4jGraph):
+    G = _create_knowledege_base_networkX_graph(arxiv_id, graphDbInstance)
     net = Network(notebook=True)
     net.from_nx(G)
-    net.show(const.TEMP_VISUAL_FULL_GRAPH_PATH)
+    net.show(const.TEMP_VISUAL_1_2_GRAPH_PATH)
 
 paper_col, viz_col = st.columns([0.4, 0.6], gap="small")
+graph_container = viz_col.container()
+
+def button_callback(arxiv_id: str):
+    htmlfile = open(const.TEMP_VISUAL_1_2_GRAPH_PATH, 'r', encoding='utf-8')
+    htmlfile_source_code = htmlfile.read()
+    graph_container.empty()
+    with graph_container:
+        components.html(htmlfile_source_code, height=500, scrolling=True)
 
 all_papers_data = _get_all_papers(graph)
 for record in all_papers_data:
@@ -84,5 +116,5 @@ for record in all_papers_data:
 **Published On**: {published_string}     
 **Citiation Count**: {citation_count}               
 """)
-    paper_col.button("Visualize as Knowledge Graph", key="button--"+arxiv_id)
+    paper_col.button("Visualize as Knowledge Graph", key="button--"+arxiv_id, on_click=button_callback, args=(arxiv_id,))
     paper_col.markdown("---")
