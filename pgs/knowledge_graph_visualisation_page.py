@@ -24,7 +24,7 @@ def _get_all_papers(graphDbInstance: Neo4jGraph):
     MATCH (p:Paper)
     WITH p, COUNT {(p)<-[:CITES]-(:Paper)} AS citation_count
     ORDER BY citation_count DESC
-    RETURN p
+    RETURN p, citation_count
     """
     results = graphDbInstance.query(query)
     return results
@@ -68,11 +68,12 @@ def visualize_full_graph(graphDbInstance: Neo4jGraph):
     net.from_nx(G)
     net.show(const.TEMP_VISUAL_FULL_GRAPH_PATH)
 
-paper_col, viz_col = st.columns([1, 1], gap="small")
+paper_col, viz_col = st.columns([0.4, 6], gap="small")
 
 all_papers_data = _get_all_papers(graph)
 for record in all_papers_data:
     paper = record['p']
+    citation_count = record['citation_count']
     arxiv_id = paper['id']
     arxiv_link = paper['arxiv_link']
     published_string = paper['published'].to_native().strftime("%B %d, %Y")
@@ -80,6 +81,7 @@ for record in all_papers_data:
     paper_col.markdown(f"""
 **Arxiv ID**: [{arxiv_id}]({arxiv_link})  
 **Title**: {paper_title}  
-**Published On**: {published_string}                    
+**Published On**: {published_string}     
+**Citiation Count**: {citation_count}               
 """)
     paper_col.markdown("---")
