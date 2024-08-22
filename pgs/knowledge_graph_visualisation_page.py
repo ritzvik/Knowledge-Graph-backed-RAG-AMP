@@ -68,7 +68,7 @@ def visualize_full_graph(graphDbInstance: Neo4jGraph):
     net.from_nx(G)
     net.show(const.TEMP_VISUAL_FULL_GRAPH_PATH)
 
-paper_col, viz_col = st.columns([0.4, 6], gap="small")
+paper_col, viz_col = st.columns([0.4, 0.6], gap="small")
 
 all_papers_data = _get_all_papers(graph)
 for record in all_papers_data:
