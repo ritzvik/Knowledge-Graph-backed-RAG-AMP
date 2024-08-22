@@ -29,6 +29,7 @@ Try to combine information from multiple documents to answer the question.
 
     _followup_prompt_template = """<|start_header_id|>system<|end_header_id|>
 You are an AI language model designed to present the information provided to you in a more readable format and concise manner.
+Do not add any greetings or salutations. No need to be polite.
 You need to provide the following information from all the papers provided in the context:
 1. Paper Title
 2. Related Papers

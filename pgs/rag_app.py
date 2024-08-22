@@ -88,8 +88,6 @@ def generate_responses_v2(input_text):
         """, unsafe_allow_html=True
     )
     kg_col_header, vanilla_col_header = kg_col.container(border=False), vanilla_col.container(border=False)
-    # kg_col_header.markdown("## Knowledge Graph RAG")
-    # vanilla_col_header.markdown("## Vanilla RAG")
 
     kg_col_header.markdown("<h2 style='text-align: center;'>Knowledge Graph RAG </h2>", unsafe_allow_html=True)
     vanilla_col_header.markdown("<h2 style='text-align: center;'>Vanilla RAG </h2>", unsafe_allow_html=True)
