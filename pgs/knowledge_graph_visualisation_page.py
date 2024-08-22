@@ -96,6 +96,7 @@ paper_col, viz_col = st.columns([0.4, 0.6], gap="small")
 graph_container = viz_col.container()
 
 def button_callback(arxiv_id: str):
+    visualise_first_and_second_degree_cited_by_papers(arxiv_id, graph)
     htmlfile = open(const.TEMP_VISUAL_1_2_GRAPH_PATH, 'r', encoding='utf-8')
     htmlfile_source_code = htmlfile.read()
     graph_container.empty()
