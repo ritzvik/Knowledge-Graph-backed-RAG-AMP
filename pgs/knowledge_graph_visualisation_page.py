@@ -84,4 +84,5 @@ for record in all_papers_data:
 **Published On**: {published_string}     
 **Citiation Count**: {citation_count}               
 """)
+    paper_col.button("Visualize as Knowledge Graph", key="button--"+arxiv_id)
     paper_col.markdown("---")
