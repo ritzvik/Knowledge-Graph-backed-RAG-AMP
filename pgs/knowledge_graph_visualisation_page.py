@@ -57,7 +57,7 @@ def _create_full_knowledege_base_networkX_graph(graphDbInstance: Neo4jGraph) -> 
     G = nx.DiGraph()
     for record in data:
         paper = record['p']
-        unique_papers.add(p['id'])
+        unique_papers.add(paper['id'])
         G.add_node(paper['id'], color='blue', title=_get_hover_data(paper), node_type='Paper')
     node_pairs = _get_all_citation_relationships(graphDbInstance)
     for pair in node_pairs:
