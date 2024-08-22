@@ -62,13 +62,14 @@ def format_context(paper_chunks: List[PaperChunk]):
         if chunk.paper.arxiv_id not in chunk_mappings:
             chunk_mappings[chunk.paper.arxiv_id] = {'paper': chunk.paper, 'chunks': []}
         chunk_mappings[chunk.paper.arxiv_id]['chunks'].append(chunk.text)
-    for val in chunk_mappings.values():
+    for i, val in enumerate(chunk_mappings.values()):
         paper: IngestablePaper = val['paper']
         st.markdown(f"""
-Arxiv ID: [{paper.arxiv_id}]({paper.arxiv_link})  
-Title: {paper.title}  
-Citiation Count: {paper.citation_count}  
-Chunks Used:
+### Paper {i+1}
+**Arxiv ID**: [{paper.arxiv_id}]({paper.arxiv_link})  
+**Title**: {paper.title}  
+**Citiation Count**: {paper.citation_count}  
+*Chunks Used*:
 """)
         with st.container(border=True, height=100):
             st.markdown("\n\n".join(val['chunks']))
