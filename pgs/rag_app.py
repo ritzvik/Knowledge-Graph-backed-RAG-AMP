@@ -1,6 +1,5 @@
-from typing import Tuple
+from typing import Tuple, List
 import logging
-import markdown
 from langchain.graphs import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
 from langchain_core.language_models.llms import BaseLLM
@@ -9,7 +8,7 @@ import streamlit.components.v1 as components
 
 import utils.constants as const
 from utils.cai_model import getCAIHostedOpenAIModels
-from utils.arxiv_utils import linkify_text
+from utils.arxiv_utils import linkify_text, PaperChunk, IngestablePaper
 from utils.neo4j_utils import get_neo4j_credentails, is_neo4j_server_up, wait_for_neo4j_server
 from utils.knowledge_graph_rag import KnowledgeGraphRAG
 from utils.vanilla_rag import VanillaRAG
@@ -57,6 +56,23 @@ def load_llm() -> Tuple[BaseLLM, str]:
     else:
         return st_commons.get_cached_local_model(), const.llama3_bos_token
 
+def format_context(paper_chunks: List[PaperChunk]):
+    chunk_mappings = dict()
+    for chunk in paper_chunks:
+        if chunk.paper.arxiv_id not in chunk_mappings:
+            chunk_mappings[chunk.paper.arxiv_id] = {'paper': chunk.paper, 'chunks': []}
+        chunk_mappings[chunk.paper.arxiv_id]['chunks'].append(chunk.text)
+    for val in chunk_mappings.values():
+        paper: IngestablePaper = val['paper']
+        st.markdown(f"""
+Arxiv ID: [{paper.arxiv_id}]({paper.arxiv_link})
+Title: {paper.title}
+Citiation Count: {paper.citation_count}
+""")
+        with st.expander("Show Chunks", expanded=False):
+            for chunk in val['chunks']:
+                st.markdown(chunk)
+
 def generate_responses_v2(input_text):
     status_container = st.container()
     kg_col, vanilla_col = st.columns([0.65, 0.35], gap="small")
@@ -81,12 +97,16 @@ def generate_responses_v2(input_text):
         answer_kg = k.invoke(input_text)
         papers_used_in_kg_answer = k.used_papers
         kg_answer_container.markdown(linkify_text(answer_kg))
-        kg_col.markdown("---")
+
+        kg_chunks_used = k.retrieve_chunks(input_text)
+        kg_context_expander = kg_col.expander("Context Used", expanded=False)
+        with kg_context_expander:
+            format_context(kg_chunks_used)
 
         status.write("Generating additional details about the answer...")
         kg_additional_container = kg_col.container(height=250, border=False)
         kg_additional_context = k.invoke_followup()
-        kg_additional_container.markdown("### Related Papers and Authors")
+        kg_additional_container.markdown("### Related Papers and Authors(from the knowledge graph)")
         kg_additional_container.markdown(linkify_text(kg_additional_context))
         kg_col.markdown("---")
 
@@ -101,6 +121,11 @@ def generate_responses_v2(input_text):
         v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
         answer_vanilla = v.invoke(input_text)
         vanilla_answer_container.markdown(linkify_text(answer_vanilla))
+
+        vanilla_chunks_used = v.retrieve_chunks(input_text)
+        vanilla_context_expander = vanilla_col.expander("Context Used", expanded=False)
+        with vanilla_context_expander:
+            format_context(vanilla_chunks_used)
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
 
