@@ -69,7 +69,7 @@ Arxiv ID: [{paper.arxiv_id}]({paper.arxiv_link})\n
 Title: {paper.title}\n
 Citiation Count: {paper.citation_count}
 """)
-        if st.checkbox("Show Chunks"):
+        if st.checkbox("Show Chunks", key=f"show_chunks_{paper.arxiv_id}_checkbox"):
             st.markdown("\n\n".join(val['chunks']))
 
 def generate_responses_v2(input_text):
