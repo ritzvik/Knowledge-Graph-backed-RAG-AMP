@@ -112,7 +112,7 @@ def generate_responses_v2(input_text):
         kg_answer_container.markdown(linkify_text(answer_kg))
 
         kg_chunks_used = k.retrieve_chunks(input_text)
-        kg_context_expander = kg_col.expander("Context Used", expanded=False)
+        kg_context_expander = kg_col.expander("Context from Knowledge Graph enhanced vector search", expanded=False)
         with kg_context_expander:
             format_context(kg_chunks_used)
 
@@ -136,7 +136,7 @@ def generate_responses_v2(input_text):
         vanilla_answer_container.markdown(linkify_text(answer_vanilla))
 
         vanilla_chunks_used = v.retrieve_chunks(input_text)
-        vanilla_context_expander = vanilla_col.expander("Context Used", expanded=False)
+        vanilla_context_expander = vanilla_col.expander("Context from vector search", expanded=False)
         with vanilla_context_expander:
             format_context(vanilla_chunks_used)
 
@@ -195,14 +195,14 @@ def generate_responses(input_text):
 with st.form('my_form'):
     input_text = ""
     st.session_state[st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value] = st.selectbox(
-        'Choose from our pre-curated example questions.',
+        'Select from a list of sample questions',
         st_commons.example_questions,
         index=None,
         placeholder="Select an example question...",
     )
     input_text = st.text_area(
         '',
-        value="",
+        value="...Or ask your own AI/ML related question here.",
         disabled=(
             (st_commons.StateVariables.QUESTION_FROM_DROPDOWN.value in st.session_state)
             and
