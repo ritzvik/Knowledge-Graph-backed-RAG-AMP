@@ -35,6 +35,14 @@ seed_arxiv_paper_ids = [
     "2407.02485",
     "2407.04153",
     "2405.18414",
+    # https://github.com/dair-ai/ML-Papers-of-the-Week/tree/main?tab=readme-ov-file#top-ml-papers-of-the-week-august-12---august-18---2024
+    "2408.04948",
+    "2408.04259",
+    "2408.05109",
+    "2408.02479",
+    "2408.02666",
+    "2408.02666",
+    "2408.01129",
 ]
 
 EMBED_PATH = "./embed_models"
