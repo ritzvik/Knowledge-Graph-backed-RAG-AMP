@@ -36,6 +36,7 @@ class StateVariables(Enum):
     REMOTE_MODEL_ID = "remote_model_id"
     REMOTE_MODEL_API_KEY = "remote_model_api_key"
     IS_REMOTE_LLM = "is_remote_llm"
+    QUESTION_FROM_DROPDOWN = "question_from_dropdown"
 
 example_questions = [
     "What is the difference between GPT-3 and GPT-4?",

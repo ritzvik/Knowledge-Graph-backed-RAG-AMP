@@ -1,3 +1,4 @@
+from typing import List
 import logging
 from langchain.graphs import Neo4jGraph
 from langchain.vectorstores.neo4j_vector import Neo4jVector
@@ -6,6 +7,7 @@ from langchain_core.prompts.prompt import PromptTemplate
 
 import utils.retriever_utils as ret_utils
 import utils.constants as const
+from utils.arxiv_utils import IngestablePaper, PaperChunk
 
 class VanillaRAG:
     _prompt_template= """<|start_header_id|>system<|end_header_id|>
@@ -31,8 +33,11 @@ Try to combine information from multiple documents to answer the question.
         self.top_k = top_k
         self.bos_token = bos_token
 
-    def retrieve_context(self, query: str) -> str:
-        paper_chunks = ret_utils.vanilla_retreiver(query=query, top_k=self.top_k, graphDbInstance=self.graphDbInstance, document_index=self.document_index)
+    def retrieve_chunks(self, query: str) -> List[PaperChunk]:
+        return ret_utils.vanilla_retreiver(query=query, top_k=self.top_k, graphDbInstance=self.graphDbInstance, document_index=self.document_index)
+
+    def generate_context(self, query: str) -> str:
+        paper_chunks = self.retrieve_chunks(query)
         context = ""
         for chunk in paper_chunks:
             context += f"Document:{chunk.text}\n"
@@ -41,7 +46,7 @@ Try to combine information from multiple documents to answer the question.
         return context
     
     def invoke(self, question: str) -> str:
-        context = self.retrieve_context(question)
+        context = self.generate_context(question)
         logging.debug(f"Context: {context}")
         prompt1 = PromptTemplate.from_template(self.bos_token+self._prompt_template)
         chain1 = prompt1 | self.llm
