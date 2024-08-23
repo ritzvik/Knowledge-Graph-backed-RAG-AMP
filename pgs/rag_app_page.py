@@ -79,10 +79,10 @@ def generate_responses_v2(input_text):
     st.markdown("""
         <style>
             [data-testid="column"]:nth-child(1){
-                background-color: ##E8FFFE;
+                background-color: #E8FFFE;
             }
             [data-testid="column"]:nth-child(2){
-                background-color: ##E2FFEE;
+                background-color: #E2FFEE;
             }
         </style>
         """, unsafe_allow_html=True
