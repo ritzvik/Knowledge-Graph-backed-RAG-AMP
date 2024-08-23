@@ -99,7 +99,7 @@ def visualise_first_and_second_degree_cited_by_papers(arxiv_id: str, graphDbInst
             var clickedNode = nodes.get(ids)[0];
             if (clickedNode.node_type == "Paper") {
                 spanId = "paper-entry-" + clickedNode.id;
-                document.getElementById(spanId).scrollIntoView({
+                parent.document.getElementById(spanId).scrollIntoView({
                     behavior: "smooth",
                     block: "start"
                 });
