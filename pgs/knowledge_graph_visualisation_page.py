@@ -119,13 +119,18 @@ graph_container = viz_col.container(height=800, border=False)
 
 def button_callback(arxiv_id: str):
     graph_header.markdown("## Knowledge Graph Visualization")
-    graph_header.markdown(f"Showing first and second degree \"cited by\" relationships for paper #[{arxiv_id}](https://arxiv.org/abs/{arxiv_id})")
     visualise_first_and_second_degree_cited_by_papers(arxiv_id, graph)
     htmlfile = open(const.TEMP_VISUAL_1_2_GRAPH_PATH, 'r', encoding='utf-8')
     htmlfile_source_code = htmlfile.read()
     graph_container.empty()
     with graph_container:
         components.html(htmlfile_source_code, height=790, scrolling=True)
+    graph_header.markdown(f"""
+Showing first and second degree \"cited by\" relationships for paper #[{arxiv_id}](https://arxiv.org/abs/{arxiv_id})
+ - blue[Blue]: The selected paper
+ - violet[Violet]: Papers that cite the selected paper
+ - green[Green]: Papers that cite the papers that cite the selected paper
+""")
 
 all_papers_data = _get_all_papers(graph)
 for record in all_papers_data:
