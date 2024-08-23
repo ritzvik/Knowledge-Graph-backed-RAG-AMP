@@ -93,6 +93,9 @@ def generate_responses_v2(input_text):
     kg_col_header.markdown("<h2 style='text-align: center;'>Knowledge Graph RAG </h2>", unsafe_allow_html=True)
     vanilla_col_header.markdown("<h2 style='text-align: center;'>Vanilla RAG </h2>", unsafe_allow_html=True)
 
+    kg_context_expander = kg_col.expander("Context from Knowledge Graph enhanced vector search", expanded=False)
+    vanilla_context_expander = vanilla_col.expander("Context from vector search", expanded=False)
+
     kg_answer_container = kg_col.container(height=250, border=False)
     vanilla_answer_container = vanilla_col.container(height=250, border=False)
     
@@ -112,7 +115,6 @@ def generate_responses_v2(input_text):
         kg_answer_container.markdown(linkify_text(answer_kg))
 
         kg_chunks_used = k.retrieve_chunks(input_text)
-        kg_context_expander = kg_col.expander("Context from Knowledge Graph enhanced vector search", expanded=False)
         with kg_context_expander:
             format_context(kg_chunks_used)
 
@@ -136,61 +138,10 @@ def generate_responses_v2(input_text):
         vanilla_answer_container.markdown(linkify_text(answer_vanilla))
 
         vanilla_chunks_used = v.retrieve_chunks(input_text)
-        vanilla_context_expander = vanilla_col.expander("Context from vector search", expanded=False)
         with vanilla_context_expander:
             format_context(vanilla_chunks_used)
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
-
-
-def generate_responses(input_text):
-    status_container = st.container()
-    col1, col2 = st.columns([0.4, 0.6], gap="small")
-    col1_header = col1.container(border=False)
-    col2_header = col2.container(border=False)
-    vanilla_container = col1.container(height=st_commons.response_container_height, border=True)
-    hybrid_container = col2.container(height=st_commons.response_container_height, border=True)
-    hybrid_response = hybrid_container.container(height=int(st_commons.response_container_height*0.60), border=False)
-    hybrid_container.markdown("---")
-    hybrid_folllow_up = hybrid_container.container(height=int(st_commons.response_container_height*0.30), border=False)
-    with status_container.status("Generating Responses...", expanded=True) as status:
-        status.write("Loading the LLM model...")
-        llm, bos_token = load_llm()
-        # since remote model is more powerful.
-        if st.session_state[st_commons.StateVariables.IS_REMOTE_LLM.value]:
-            top_k = 7
-        else:
-            top_k = 5
-
-        status.write("Generating response from Vanilla RAG...")
-        v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
-        answer_vanilla = v.invoke(input_text)
-        logging.info("generated response from Vanilla RAG")
-        col1_header.markdown("## Vanilla RAG")
-        vanilla_container.markdown(linkify_text(answer_vanilla))
-
-        status.write("Generating response from Hybrid RAG...")
-        h=KnowledgeGraphRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
-        answer_hybrid = h.invoke(input_text)
-        papers_used_in_hybrid = h.used_papers
-        logging.info("generated response from Hybrid RAG")
-        col2_header.markdown("## Hybrid RAG")
-        hybrid_response.markdown(linkify_text(answer_hybrid))
-
-        status.write("Generating follow-up details from Hybrid RAG...")
-        answer_followup = h.invoke_followup()
-        logging.info("generated follow-up answer")
-        hybrid_folllow_up.markdown("### Follow-up details")
-        hybrid_folllow_up.markdown(linkify_text(answer_followup))
-
-        status.update(label="Answer Generation Complete", state="complete", expanded=False)
-    
-    st.markdown("""---""")
-    st.markdown(st_commons.graph_visualisation_markdown)
-    st_graph_viz.visualize_graph(papers_used_in_hybrid, graph)
-    htmlfile = open(const.TEMP_VISUAL_GRAPH_PATH, 'r', encoding='utf-8')
-    htmlfile_source_code = htmlfile.read()
-    components.html(htmlfile_source_code, height=800, scrolling=True)
 
 with st.form('my_form'):
     input_text = ""
