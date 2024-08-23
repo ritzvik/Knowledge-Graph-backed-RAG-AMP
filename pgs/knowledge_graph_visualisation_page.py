@@ -115,7 +115,7 @@ paper_col, viz_col = st.columns([0.4, 0.6], gap="small")
 paper_col.markdown("## :blue[_arXiv_] papers in the Knowledge Graph")
 paper_container = paper_col.container(height=800, border=False)
 graph_header = viz_col.container(border=False)
-graph_container = viz_col.container(height=800, border=False)
+graph_container = viz_col.container(height=600, border=False)
 
 def button_callback(arxiv_id: str):
     graph_header.markdown("## Knowledge Graph Visualization")
@@ -124,8 +124,8 @@ def button_callback(arxiv_id: str):
     htmlfile_source_code = htmlfile.read()
     graph_container.empty()
     with graph_container:
-        components.html(htmlfile_source_code, height=790, scrolling=True)
-    graph_container.markdown(f"""
+        components.html(htmlfile_source_code, height=590, scrolling=True)
+    viz_col.markdown(f"""
 Showing first and second degree \"cited by\" relationships for paper #[{arxiv_id}](https://arxiv.org/abs/{arxiv_id})
  - :blue[Blue] : The selected paper
  - :violet[Violet] : Papers that cite the selected paper
