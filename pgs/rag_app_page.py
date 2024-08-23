@@ -65,10 +65,9 @@ def format_context(paper_chunks: List[PaperChunk]):
     for i, val in enumerate(chunk_mappings.values()):
         paper: IngestablePaper = val['paper']
         st.markdown(f"""
-### Paper {i+1}
-**Arxiv ID**: [{paper.arxiv_id}]({paper.arxiv_link})  
-**Title**: {paper.title}  
-**Citiation Count**: {paper.citation_count}  
+### {paper.title}
+**Arxiv ID**: [{paper.arxiv_id}]({paper.arxiv_link})   
+:blue[**Citiation Count**]: {paper.citation_count}  
 *Chunks Used*:
 """)
         with st.container(border=True, height=100):
@@ -116,6 +115,7 @@ def generate_responses_v2(input_text):
         answer_kg = k.invoke(input_text)
         papers_used_in_kg_answer = k.used_papers
         kg_answer_container.markdown(linkify_text(answer_kg))
+        kg_col.markdown("---")
 
         status.write("Generating additional details about the answer...")
         kg_additional_container = kg_col.container(height=250, border=False)
@@ -138,6 +138,7 @@ def generate_responses_v2(input_text):
             format_context(vanilla_chunks_used)
         answer_vanilla = v.invoke(input_text)
         vanilla_answer_container.markdown(linkify_text(answer_vanilla))
+        vanilla_col.markdown("---")
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
 
