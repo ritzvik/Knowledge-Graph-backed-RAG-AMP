@@ -124,7 +124,7 @@ def button_callback(arxiv_id: str):
     htmlfile_source_code = htmlfile.read()
     graph_container.empty()
     with graph_container:
-        components.html(htmlfile_source_code, height=590, scrolling=True)
+        components.html(htmlfile_source_code, height=570, scrolling=True)
     viz_col.markdown(f"""
 Showing first and second degree \"cited by\" relationships for paper #[{arxiv_id}](https://arxiv.org/abs/{arxiv_id})
  - :blue[Blue] : The selected paper
