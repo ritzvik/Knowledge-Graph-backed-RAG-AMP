@@ -101,7 +101,7 @@ def visualise_first_and_second_degree_cited_by_papers(arxiv_id: str, graphDbInst
                 spanId = "paper-entry-" + clickedNode.id;
                 parent.document.getElementById(spanId).scrollIntoView({
                     behavior: "smooth",
-                    block: "start"
+                    block: "center"
                 });
             }
         });
