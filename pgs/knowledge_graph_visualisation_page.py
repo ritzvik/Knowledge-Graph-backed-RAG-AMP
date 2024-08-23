@@ -93,19 +93,20 @@ def visualise_first_and_second_degree_cited_by_papers(arxiv_id: str, graphDbInst
     net.show(const.TEMP_VISUAL_1_2_GRAPH_PATH)
 
 paper_col, viz_col = st.columns([0.4, 0.6], gap="small")
-paper_col.markdown("<h2>ArXiv papers in the Knowledge Graph</h2>", unsafe_allow_html=True)
+paper_col.markdown("## :red[_ArXiv_] papers in the Knowledge Graph")
 paper_container = paper_col.container(height=800, border=False)
 graph_header = viz_col.container(border=False)
 graph_container = viz_col.container(height=800, border=False)
 
 def button_callback(arxiv_id: str):
-    graph_header.markdown("<h2>Knowledge Graph Visualization</h2>", unsafe_allow_html=True)
+    graph_header.markdown("## Knowledge Graph Visualization")
+    graph_header.markdown(f"Showing first and second degree \"cited by\" relationships for paper #[{arxiv_id}](https://arxiv.org/abs/{arxiv_id})")
     visualise_first_and_second_degree_cited_by_papers(arxiv_id, graph)
     htmlfile = open(const.TEMP_VISUAL_1_2_GRAPH_PATH, 'r', encoding='utf-8')
     htmlfile_source_code = htmlfile.read()
     graph_container.empty()
     with graph_container:
-        components.html(htmlfile_source_code, height=800, scrolling=True)
+        components.html(htmlfile_source_code, height=790, scrolling=True)
 
 all_papers_data = _get_all_papers(graph)
 for record in all_papers_data:
@@ -121,5 +122,5 @@ for record in all_papers_data:
 **Published On**: {published_string}     
 **Citiation Count**: {citation_count}               
 """)
-    paper_container.button("Visualize as Knowledge Graph", key="button--"+arxiv_id, on_click=button_callback, args=(arxiv_id,))
+    paper_container.button("Render as Knowledge Graph", key="button--"+arxiv_id, on_click=button_callback, args=(arxiv_id,))
     paper_container.markdown("---")
