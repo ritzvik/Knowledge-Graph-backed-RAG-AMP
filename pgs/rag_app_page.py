@@ -18,7 +18,7 @@ import pgs.graph_visualisation as st_graph_viz
 embedding = st_commons.get_cached_embedding_model()
 
 st.header("Knowledge Graph powered RAG")
-st.subheader("This app uses AI/ML papers from :red[_ArXiv_] as the knowledge base to answer your questions.")
+st.subheader("This app uses AI/ML papers from :blue[_arXiv_] as the knowledge base to answer your questions.")
 
 if st_commons.StateVariables.IS_REMOTE_LLM.value not in st.session_state:
     # Default to local LLM in case of no selection.

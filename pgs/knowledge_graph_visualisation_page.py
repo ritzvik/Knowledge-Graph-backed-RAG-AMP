@@ -112,7 +112,7 @@ def visualise_first_and_second_degree_cited_by_papers(arxiv_id: str, graphDbInst
         f.write(html_content)
 
 paper_col, viz_col = st.columns([0.4, 0.6], gap="small")
-paper_col.markdown("## :red[_ArXiv_] papers in the Knowledge Graph")
+paper_col.markdown("## :blue[_arXiv_] papers in the Knowledge Graph")
 paper_container = paper_col.container(height=800, border=False)
 graph_header = viz_col.container(border=False)
 graph_container = viz_col.container(height=800, border=False)
