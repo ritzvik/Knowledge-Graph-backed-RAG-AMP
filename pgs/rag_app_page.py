@@ -110,13 +110,12 @@ def generate_responses_v2(input_text):
 
         status.write("Generating response from Knowledge Graph RAG...")
         k=KnowledgeGraphRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
-        answer_kg = k.invoke(input_text)
-        papers_used_in_kg_answer = k.used_papers
-        kg_answer_container.markdown(linkify_text(answer_kg))
-
         kg_chunks_used = k.retrieve_chunks(input_text)
         with kg_context_expander:
             format_context(kg_chunks_used)
+        answer_kg = k.invoke(input_text)
+        papers_used_in_kg_answer = k.used_papers
+        kg_answer_container.markdown(linkify_text(answer_kg))
 
         status.write("Generating additional details about the answer...")
         kg_additional_container = kg_col.container(height=250, border=False)
@@ -134,12 +133,11 @@ def generate_responses_v2(input_text):
 
         status.write("Generating response from Vanilla RAG...")
         v=VanillaRAG(graphDbInstance=graph, document_index=document_index, llm=llm, top_k=top_k, bos_token=bos_token)
-        answer_vanilla = v.invoke(input_text)
-        vanilla_answer_container.markdown(linkify_text(answer_vanilla))
-
         vanilla_chunks_used = v.retrieve_chunks(input_text)
         with vanilla_context_expander:
             format_context(vanilla_chunks_used)
+        answer_vanilla = v.invoke(input_text)
+        vanilla_answer_container.markdown(linkify_text(answer_vanilla))
 
         status.update(label="Answer Generation Complete", state="complete", expanded=False)
 
