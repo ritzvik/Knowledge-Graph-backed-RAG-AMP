@@ -122,6 +122,6 @@ for record in all_papers_data:
 **Title**: {paper_title}  
 **Published On**: {published_string}     
 **Citiation Count**: {citation_count}               
-""")
+""", unsafe_allow_html=True)
     paper_container.button("Render as Knowledge Graph", key="button--"+arxiv_id, on_click=button_callback, args=(arxiv_id,))
     paper_container.markdown("---")
