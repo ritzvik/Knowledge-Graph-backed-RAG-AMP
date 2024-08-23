@@ -91,6 +91,25 @@ def visualise_first_and_second_degree_cited_by_papers(arxiv_id: str, graphDbInst
     net = Network(notebook=True)
     net.from_nx(G)
     net.show(const.TEMP_VISUAL_1_2_GRAPH_PATH)
+    with open(const.TEMP_VISUAL_1_2_GRAPH_PATH, "r") as f:
+        html_content = f.read()
+        content_to_be_added = """
+        network.on( 'click', function(properties) {
+            var ids = properties.nodes;
+            var clickedNode = nodes.get(ids)[0];
+            if (clickedNode.node_type == "Paper") {
+                spanId = "paper-entry-" + clickedNode.id;
+                document.getElementById(spanId).scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        });
+        """
+        string_to_find = "vis.Network(container, data, options);"
+        html_content = html_content.replace(string_to_find, string_to_find + content_to_be_added)
+    with open(const.TEMP_VISUAL_1_2_GRAPH_PATH, "w") as f:
+        f.write(html_content)
 
 paper_col, viz_col = st.columns([0.4, 0.6], gap="small")
 paper_col.markdown("## :red[_ArXiv_] papers in the Knowledge Graph")
@@ -117,8 +136,8 @@ for record in all_papers_data:
     published_string = paper['published'].to_native().strftime("%B %d, %Y")
     paper_title = paper['title']
     paper_container.markdown(f"""
-**Arxiv ID**: [{arxiv_id}]({arxiv_link})  
 <span id="paper-entry-{arxiv_id}"></span>
+**Arxiv ID**: [{arxiv_id}]({arxiv_link})  
 **Title**: {paper_title}  
 **Published On**: {published_string}     
 **Citiation Count**: {citation_count}               
