@@ -142,8 +142,8 @@ for record in all_papers_data:
     paper_title = paper['title']
     paper_container.markdown(f"""
 <span id="paper-entry-{arxiv_id}"></span>
+#### {paper_title}
 **Arxiv ID**: [{arxiv_id}]({arxiv_link})  
-**Title**: {paper_title}  
 **Published On**: {published_string}     
 **Citiation Count**: {citation_count}               
 """, unsafe_allow_html=True)
