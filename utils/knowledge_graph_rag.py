@@ -1,14 +1,16 @@
-import re
 import logging
+import re
 from typing import List
+
 from langchain.graphs import Neo4jGraph
 from langchain.vectorstores.neo4j_vector import Neo4jVector
 from langchain_core.language_models.llms import BaseLLM
 from langchain_core.prompts.prompt import PromptTemplate
 
-import utils.retriever_utils as ret_utils
 import utils.constants as const
+import utils.retriever_utils as ret_utils
 from utils.arxiv_utils import IngestablePaper, PaperChunk
+
 
 class KnowledgeGraphRAG:
     _initial_prompt_template = """<|start_header_id|>system<|end_header_id|>
@@ -43,7 +45,14 @@ Instruction: Please provide the asked information about the papers in the contex
 <|eot_id|><|start_header_id|>assistant<|end_header_id|>
 """
 
-    def __init__(self, graphDbInstance: Neo4jGraph, document_index: Neo4jVector, llm: BaseLLM, top_k: int, bos_token: str):
+    def __init__(
+        self,
+        graphDbInstance: Neo4jGraph,
+        document_index: Neo4jVector,
+        llm: BaseLLM,
+        top_k: int,
+        bos_token: str,
+    ):
         self.graphDbInstance = graphDbInstance
         self.document_index = document_index
         self.llm = llm
@@ -52,7 +61,12 @@ Instruction: Please provide the asked information about the papers in the contex
         self._used_papers = list()
 
     def retrieve_chunks(self, query: str) -> List[PaperChunk]:
-        return ret_utils.hybrid_retreiver(query=query, top_k=self.top_k, graphDbInstance=self.graphDbInstance, document_index=self.document_index)
+        return ret_utils.hybrid_retreiver(
+            query=query,
+            top_k=self.top_k,
+            graphDbInstance=self.graphDbInstance,
+            document_index=self.document_index,
+        )
 
     def generate_context(self, query: str) -> str:
         paper_chunks = self.retrieve_chunks(query)
@@ -62,13 +76,16 @@ Instruction: Please provide the asked information about the papers in the contex
             context += f"Document arXiv ID: {chunk.paper.arxiv_id}\n"
             context += "\n\n"
         return context
-    
+
     def get_auxillary_context_from_papers(self, arxiv_ids: List[str]) -> str:
         papers = ret_utils.get_papers(arxiv_ids, self.graphDbInstance)
         context = ""
-        for i,paper in enumerate(papers):
+        for i, paper in enumerate(papers):
             paper.graph_db_instance = self.graphDbInstance
-            related_papers = [(p.title+"("+p.arxiv_id+")") for p in paper.get_citing_papers()[:3]]
+            related_papers = [
+                (p.title + "(" + p.arxiv_id + ")")
+                for p in paper.get_citing_papers()[:3]
+            ]
             top_authors = paper.get_top_authors()[:3]
             context += f"Information for Paper {i+1}:\n"
             context += f"Paper Title:{paper.title}\n"
@@ -77,34 +94,42 @@ Instruction: Please provide the asked information about the papers in the contex
             context += f"Top Authors: {', '.join(top_authors)}\n"
             context += "\n\n"
         return context
-    
+
     @property
     def used_papers(self) -> List[str]:
         return self._used_papers
-    
+
     def invoke(self, question: str) -> str:
         context = self.generate_context(question)
         logging.debug(f"Context: {context}")
-        prompt1 = PromptTemplate.from_template(self.bos_token+self._initial_prompt_template)
+        prompt1 = PromptTemplate.from_template(
+            self.bos_token + self._initial_prompt_template
+        )
         chain1 = prompt1 | self.llm
-        response1 = chain1.invoke({
-            "question": question,
-            "context": context,
-        })
+        response1 = chain1.invoke(
+            {
+                "question": question,
+                "context": context,
+            }
+        )
         arxiv_references = re.findall(r"\d{4}\.\d{4,5}", response1)
         arxiv_ids = [arxiv_id for arxiv_id in arxiv_references]
         arxiv_ids = list(set(arxiv_ids))
         self._used_papers = arxiv_ids
         return response1
-    
+
     def invoke_followup(self) -> str:
         auxillary_context = self.get_auxillary_context_from_papers(self._used_papers)
         logging.debug(f"Auxillary Context: {auxillary_context}")
 
-        prompt = PromptTemplate.from_template(self.bos_token+self._followup_prompt_template)
+        prompt = PromptTemplate.from_template(
+            self.bos_token + self._followup_prompt_template
+        )
         chain = prompt | self.llm
-        response = chain.invoke({
-            "context": auxillary_context,
-        })
+        response = chain.invoke(
+            {
+                "context": auxillary_context,
+            }
+        )
         self._used_papers = list()
         return response

@@ -52,9 +52,10 @@ TEMP_VISUAL_1_2_GRAPH_PATH = "./temp-first-and-second-order-graph.html"
 
 huggingface_token = os.getenv("HF_TOKEN")
 
-embed_model_name="Alibaba-NLP/gte-large-en-v1.5"
+embed_model_name = "Alibaba-NLP/gte-large-en-v1.5"
 colbert_model = "colbert-ir/colbertv2.0"
 local_model_to_be_quantised = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+llm_temperture = 0.01
 
 llama3_stop_token = "<|eot_id|>"
-llama3_bos_token = "<|begin_of_text|>" # Beggining of sequence token
+llama3_bos_token = "<|begin_of_text|>"  # Beggining of sequence token
