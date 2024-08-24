@@ -49,7 +49,7 @@ def load_llm() -> Tuple[BaseLLM, str]:
             model=st.session_state[st_commons.StateVariables.REMOTE_MODEL_ID.value],
             api_key=st.session_state[st_commons.StateVariables.REMOTE_MODEL_API_KEY.value],
             max_tokens=2048,
-            temperature=0.3,
+            temperature=0.0,
             stop=const.llama3_stop_token,
         )
         return remote_llm, const.llama3_bos_token

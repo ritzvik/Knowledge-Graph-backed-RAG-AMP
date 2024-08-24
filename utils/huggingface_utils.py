@@ -41,7 +41,7 @@ def load_local_model() -> BaseLLM:
         repetition_penalty=1.1,
         return_full_text=False,
         max_new_tokens=2048,
-        temperature = 0.2,
+        temperature = 0.0,
         do_sample=True,
     )
     local_llm = HuggingFacePipeline(pipeline=text_generation_pipeline)
