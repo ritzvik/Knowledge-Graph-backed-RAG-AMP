@@ -157,7 +157,7 @@ def visualise_first_and_second_degree_cited_by_papers(
 
 paper_col, viz_col = st.columns([0.4, 0.6], gap="small")
 paper_col.markdown("## :blue[_arXiv_] papers in the Knowledge Graph")
-paper_container = paper_col.container(height=800, border=False)
+paper_container = paper_col.container(height=700, border=False)
 graph_header = viz_col.container(border=False)
 graph_container = viz_col.container(height=600, border=False)
 
@@ -188,7 +188,8 @@ for record in all_papers_data:
     arxiv_link = paper["arxiv_link"]
     published_string = paper["published"].to_native().strftime("%B %d, %Y")
     paper_title = paper["title"]
-    paper_container.markdown(
+    sub_container = paper_container.container(border=False)
+    sub_container.markdown(
         f"""
 <span id="paper-entry-{arxiv_id}"></span>
 #### {paper_title}
@@ -198,10 +199,10 @@ for record in all_papers_data:
 """,
         unsafe_allow_html=True,
     )
-    paper_container.button(
+    sub_container.button(
         "Visualize as Knowledge Graph",
         key="button--" + arxiv_id,
         on_click=button_callback,
         args=(arxiv_id,),
     )
-    paper_container.markdown("---")
+    sub_container.markdown("---")
