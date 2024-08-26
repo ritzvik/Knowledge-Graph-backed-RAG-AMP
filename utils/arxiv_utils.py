@@ -175,7 +175,19 @@ def create_paper_object_from_arxiv_id(arxivId: str) -> IngestablePaper:
     )
 
 
-def linkify_text(text: str) -> str:
+def linkify_authors(text: str, authors: List[str]) -> str:
+    authors = list(set(authors))
+    new_text = text
+    for author in authors:
+        search_author = author.replace(" ", "+")
+        new_text = new_text.replace(
+            author,
+            f"[{author}](https://arxiv.org/search/cs?query={search_author}&searchtype=author&abstracts=show&order=-announced_date_first&size=50)",
+        )
+    return new_text
+
+
+def linkify_arxiv_ids(text: str) -> str:
     arxiv_id_pattern = r"\d{4}\.\d{4,5}"
     arxiv_ids = re.findall(arxiv_id_pattern, text)
     arxiv_ids = list(set(arxiv_ids))

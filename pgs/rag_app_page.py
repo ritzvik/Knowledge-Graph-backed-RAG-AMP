@@ -10,7 +10,12 @@ from langchain_core.language_models.llms import BaseLLM
 import pgs.commons as st_commons
 import pgs.graph_visualisation as st_graph_viz
 import utils.constants as const
-from utils.arxiv_utils import IngestablePaper, PaperChunk, linkify_text
+from utils.arxiv_utils import (
+    IngestablePaper,
+    PaperChunk,
+    linkify_arxiv_ids,
+    linkify_authors,
+)
 from utils.cai_model import getCAIHostedOpenAIModels
 from utils.knowledge_graph_rag import KnowledgeGraphRAG
 from utils.neo4j_utils import (
@@ -147,9 +152,12 @@ def generate_responses_v2(input_text):
         kg_chunks_used = k.retrieve_chunks(input_text)
         with kg_context_expander:
             format_context(kg_chunks_used)
+        kg_context_authors = [
+            a for ax in [pc.paper.authors for pc in kg_chunks_used] for a in ax
+        ]
         answer_kg = k.invoke(input_text)
         papers_used_in_kg_answer = k.used_papers
-        kg_answer_container.markdown(linkify_text(answer_kg))
+        kg_answer_container.markdown(linkify_arxiv_ids(answer_kg))
         kg_col.markdown("---")
 
         status.write("Generating additional details about the answer...")
@@ -158,7 +166,11 @@ def generate_responses_v2(input_text):
         kg_additional_container.markdown(
             "### Related Papers and Authors(from the knowledge graph)"
         )
-        kg_additional_container.markdown(linkify_text(kg_additional_context))
+        kg_additional_container.markdown(
+            linkify_authors(
+                linkify_arxiv_ids(kg_additional_context), kg_context_authors
+            )
+        )
         kg_col.markdown("---")
 
         st_graph_viz.visualize_graph(papers_used_in_kg_answer, graph)
@@ -180,7 +192,7 @@ def generate_responses_v2(input_text):
         with vanilla_context_expander:
             format_context(vanilla_chunks_used)
         answer_vanilla = v.invoke(input_text)
-        vanilla_answer_container.markdown(linkify_text(answer_vanilla))
+        vanilla_answer_container.markdown(linkify_arxiv_ids(answer_vanilla))
         vanilla_col.markdown("---")
 
         status.update(
