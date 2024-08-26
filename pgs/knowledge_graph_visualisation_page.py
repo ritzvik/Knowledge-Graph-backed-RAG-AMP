@@ -199,7 +199,7 @@ for record in all_papers_data:
         unsafe_allow_html=True,
     )
     paper_container.button(
-        ":material/hub: Visualize as Knowledge Graph",
+        " :material/hub: Visualize as Knowledge Graph",
         key="button--" + arxiv_id,
         on_click=button_callback,
         args=(arxiv_id,),
