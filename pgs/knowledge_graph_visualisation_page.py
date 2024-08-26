@@ -193,13 +193,13 @@ for record in all_papers_data:
 <span id="paper-entry-{arxiv_id}"></span>
 #### {paper_title}
 **Arxiv ID**: [{arxiv_id}]({arxiv_link})  
-**Published On**: {published_string}     
-**Citiation Count**: {citation_count}               
+**Published On**: {published_string}  
+**Citiation Count**: {citation_count}
 """,
         unsafe_allow_html=True,
     )
     paper_container.button(
-        "Render as Knowledge Graph",
+        ":material/hub: Visualize as Knowledge Graph",
         key="button--" + arxiv_id,
         on_click=button_callback,
         args=(arxiv_id,),
